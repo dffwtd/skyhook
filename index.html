@@ -348,6 +348,8 @@ if(selectedMode!=='extreme') selectedMode='normal';
 let speedMul=selectedMode==='extreme' ? 2 : 1;
 let best=Number(lsGet(bestKey(selectedMode))||0);
 let playerName='';
+let fogArmed=false;
+let fogStartFrame=0;
 const selectedMap='shaft';
 let player, anchors, hazards, particles, explosions, camY, altitude, frame, topMost, lastAnchorY, platform, started, nextHazardAlt, deathTimer, wallGrace;
 let rope={active:false,ax:0,ay:0,len:0,baseLen:0,angle:0,omega:0,spin:1,prevSpeed:0,turns:0};
@@ -869,7 +871,6 @@ function update(){
 }
 
 // fog deadly line in world-y: starts well below the platform, only rises once you launch
-let fogStartFrame=0, fogArmed=false;
 function fogLineY(){
   if(started && !fogArmed){ fogArmed=true; fogStartFrame=frame; }
   if(!fogArmed) return 460; // safely below platform (player stands at y=-12)
