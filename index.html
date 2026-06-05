@@ -208,6 +208,7 @@
   </div>
 </div>
 
+<script src="supabase-config.js"></script>
 <script>
 const cv=document.getElementById('game'), ctx=cv.getContext('2d'), stage=document.getElementById('stage');
 let W=460,H=818,dpr=1;
@@ -224,6 +225,12 @@ function resize(){
 window.addEventListener('resize',resize);
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function supabaseSettings(){
+  const cfg=window.SKYHOOK_SUPABASE||{};
+  const url=String(cfg.url||'').replace(/\/+$/,'');
+  const key=String(cfg.anonKey||cfg.anon_key||'');
+  return url && key ? {url,key} : null;
+}
 const perf={quality:1,dprCap:1.75,starCount:70,rainCount:48,gasCount:8,layerSkip:1,particleCap:220,trailCap:12,fx:1};
 function updateUiScale(){
   const widthScale=W/460;
@@ -254,7 +261,7 @@ function updateUiScale(){
 
 const AudioCtor=window.AudioContext||window.webkitAudioContext;
 const tntSprite=new Image();
-tntSprite.src='tnt.png';
+tntSprite.src='TNT.png';
 const audio={ctx:null,master:null,sfxGain:null};
 function pauseIcon(paused){
   return paused
@@ -728,11 +735,17 @@ function startGame(){
 async function submitScore(){
   const score=Math.max(0,Math.floor(altitude||0));
   const name=cleanPlayerName(playerName||lsGet('skyhook_player_name')||'');
-  if(!name || !score) return;
+  const cfg=supabaseSettings();
+  if(!name || !score || !cfg) return;
   try {
-    await fetch('/.netlify/functions/submit-score',{
+    await fetch(cfg.url+'/rest/v1/leaderboard_scores',{
       method:'POST',
-      headers:{'content-type':'application/json'},
+      headers:{
+        apikey:cfg.key,
+        Authorization:'Bearer '+cfg.key,
+        'content-type':'application/json',
+        Prefer:'return=minimal'
+      },
       body:JSON.stringify({player_name:name,altitude:score,mode:scoreMode()}),
       keepalive:true
     });
@@ -1289,7 +1302,7 @@ function updateAltitudeUI(){
     while(tntWrap.children.length<tntGroups.length){
       const mark=document.createElement("div");
       mark.className="tnt-meter-mark hidden";
-      mark.innerHTML='<span class="tnt-alt"></span><img class="tnt-mini" src="tnt.png" alt="" aria-hidden="true"><span class="tnt-count"></span>';
+      mark.innerHTML='<span class="tnt-alt"></span><img class="tnt-mini" src="TNT.png" alt="" aria-hidden="true"><span class="tnt-count"></span>';
       tntWrap.appendChild(mark);
     }
     for(let i=0;i<tntWrap.children.length;i++){

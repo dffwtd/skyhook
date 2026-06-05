@@ -62,6 +62,7 @@
     <div class="local" id="localBest">LOCAL BEST 0m</div>
   </main>
 
+<script src="supabase-config.js"></script>
 <script>
 const rows=document.getElementById('rankRows');
 const params=new URLSearchParams(location.search);
@@ -69,6 +70,12 @@ let currentMode=params.get('mode')==='extreme' ? 'extreme' : 'normal';
 const modeKey=mode=>mode==='extreme' ? 'skyhook_best_extreme' : 'skyhook_best_normal';
 const backBtn=document.getElementById('backBtn');
 const localBestEl=document.getElementById('localBest');
+function supabaseSettings(){
+  const cfg=window.SKYHOOK_SUPABASE||{};
+  const url=String(cfg.url||'').replace(/\/+$/,'');
+  const key=String(cfg.anonKey||cfg.anon_key||'');
+  return url && key ? {url,key} : null;
+}
 
 function esc(v){return String(v||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function syncModeUI(){
@@ -87,8 +94,11 @@ function render(scores){
   rows.innerHTML=scores.map((s,i)=>'<div class="row"><div class="rank">#'+(i+1)+'</div><div class="name">'+esc(s.player_name)+'</div><div class="alt">'+Number(s.altitude||0)+'m</div><div class="time">'+esc(fmtTime(s.created_at))+'</div></div>').join('');
 }
 async function loadScores(){
+  const cfg=supabaseSettings();
+  if(!cfg){ rows.innerHTML='<div class="state">Supabase 설정 대기 중</div>'; return; }
   try {
-    const res=await fetch('/.netlify/functions/leaderboard?mode='+encodeURIComponent(currentMode),{headers:{accept:'application/json'}});
+    const endpoint=cfg.url+'/rest/v1/leaderboard_scores?select=player_name,altitude,created_at,mode&mode=eq.'+encodeURIComponent(currentMode)+'&order=altitude.desc,created_at.asc&limit=50';
+    const res=await fetch(endpoint,{headers:{apikey:cfg.key,Authorization:'Bearer '+cfg.key,accept:'application/json'}});
     if(!res.ok) throw new Error('request failed');
     render(await res.json());
   } catch (_) {
