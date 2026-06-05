@@ -176,7 +176,7 @@
         <input class="player-name-input" id="playerNameInput" maxlength="16" autocomplete="nickname" placeholder="NAME" aria-label="player name">
         <div class="name-error hidden" id="nameError">이름을 입력해줘</div>
       </div>
-      <div class="mode-note" id="modeNote">NORMAL은 기본 모드. EXTREME은 1.4배 모드.</div>
+      <div class="mode-note" id="modeNote">NORMAL은 0.8배 모드. EXTREME은 1.2배 모드.</div>
       <button class="btn" id="startBtn" type="button">START ▲</button>
     </div>
 
@@ -361,7 +361,7 @@ const GRAV=0.34;
 let state='start';
 let selectedMode=String(lsGet('skyhook_mode')||'normal');
 if(selectedMode!=='extreme') selectedMode='normal';
-let speedMul=selectedMode==='extreme' ? 1.4 : 1;
+let speedMul=selectedMode==='extreme' ? 1.2 : 0.8;
 let best=Number(lsGet(bestKey(selectedMode))||0);
 let playerName='';
 let fogArmed=false;
@@ -379,7 +379,7 @@ function syncModeButtons(){
     btn.classList.toggle('active', btn.dataset.mode===active);
   });
   const note=document.getElementById('modeNote');
-  if(note) note.textContent = active==='extreme' ? 'EXTREME은 1.4배 모드.' : 'NORMAL은 기본 모드.';
+  if(note) note.textContent = active==='extreme' ? 'EXTREME은 1.2배 모드.' : 'NORMAL은 0.8배 모드.';
 }
 function syncRankLinks(){
   const mode=scoreMode();
@@ -388,7 +388,7 @@ function syncRankLinks(){
 }
 function applyMode(mode){
   selectedMode = mode==='extreme' ? 'extreme' : 'normal';
-  speedMul = selectedMode==='extreme' ? 1.4 : 1;
+  speedMul = selectedMode==='extreme' ? 1.2 : 0.8;
   lsSet('skyhook_mode', selectedMode);
   syncModeButtons();
   syncRankLinks();

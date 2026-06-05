@@ -7,14 +7,15 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;900&family=Syne:wght@700;800&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
-  html,body { height:100%; overflow:hidden; background:#070510; color:#fff;
+  html,body { min-height:100%; overflow-x:hidden; overflow-y:auto; background:#070510; color:#fff;
     font-family:'Syne',sans-serif; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
     -webkit-tap-highlight-color:transparent; }
-  body { display:flex; align-items:center; justify-content:center;
+  body { display:block; min-height:100dvh; padding:16px 0;
     background:radial-gradient(ellipse at 50% -10%,rgba(0,200,255,.18),transparent 55%),
       radial-gradient(ellipse at 50% 110%,rgba(156,219,60,.14),transparent 50%),#070510; }
-  .page { width:100vw; height:100vh; height:100dvh; position:relative;
-    overflow:hidden; border:1px solid rgba(0,200,255,.22); padding:58px 14px 22px; }
+  .shell { display:flex; align-items:flex-start; justify-content:center; min-height:calc(100dvh - 32px); }
+  .page { width:100vw; min-height:100vh; min-height:100dvh; height:auto; position:relative;
+    overflow:visible; border:1px solid rgba(0,200,255,.22); padding:58px 14px 28px; }
   @media (orientation:landscape) {
     .page { width:min(100vw,calc(100vh * 9 / 16)); width:min(100vw,calc(100dvh * 9 / 16));
       height:100vh; height:100dvh; }
@@ -30,13 +31,13 @@
   .title span { color:#9cdb3c; text-shadow:0 0 18px #9cdb3c; }
   .panel { position:relative; z-index:1; margin-top:24px; border:1px solid rgba(0,200,255,.28);
     background:rgba(7,5,16,.62); box-shadow:0 0 24px rgba(0,200,255,.12), inset 0 0 18px rgba(0,200,255,.06); }
-  .row { display:grid; grid-template-columns:48px minmax(0,1fr) 84px 116px; gap:10px; align-items:center; min-height:58px;
+  .row { display:grid; grid-template-columns:54px minmax(0,1fr) 92px 116px; gap:10px; align-items:center; min-height:62px;
     padding:0 8px; border-bottom:1px solid rgba(0,200,255,.12); }
   .row:last-child { border-bottom:0; }
-  .head { min-height:42px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:13px; letter-spacing:0; }
-  .rank { font-family:'Syne',sans-serif; color:#9cdb3c; font-weight:800; font-size:18px; letter-spacing:0; }
-  .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:18px; min-width:0; }
-  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:18px; letter-spacing:0; white-space:nowrap; }
+  .head { min-height:44px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:14px; letter-spacing:0; }
+  .rank { font-family:'Syne',sans-serif; color:#9cdb3c; font-weight:800; font-size:22px; letter-spacing:0; }
+  .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:22px; min-width:0; }
+  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:22px; letter-spacing:0; white-space:nowrap; }
   .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:14px; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .state { padding:24px 14px; text-align:center; color:#9fb1c4; line-height:1.45; font-size:13px; }
   .mode-tabs { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
@@ -48,13 +49,14 @@
 
   @media (max-width:380px) {
     .page { padding-left:10px; padding-right:10px; }
-    .row { grid-template-columns:42px minmax(0,1fr) 74px 104px; gap:6px; padding:0 6px; }
-    .rank,.name,.alt { font-size:16px; }
+    .row { grid-template-columns:44px minmax(0,1fr) 78px 104px; gap:6px; padding:0 6px; }
+    .rank,.name,.alt { font-size:17px; }
     .time { font-size:12px; }
   }
 </style>
 </head>
 <body draggable="false">
+  <div class="shell">
   <main class="page">
     <a class="back" id="backBtn" href="index.html" aria-label="back to game">GAME</a>
     <h1 class="title">SKYHOOK<br><span>RANKING</span></h1>
@@ -68,6 +70,7 @@
     </section>
     <div class="local" id="localBest">LOCAL BEST 0m</div>
   </main>
+  </div>
 
 <script src="supabase-config.js"></script>
 <script>
