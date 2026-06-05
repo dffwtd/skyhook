@@ -102,7 +102,7 @@
     padding:calc(11px * var(--btn-scale)) 0; cursor:pointer; box-shadow:0 0 16px rgba(0,200,255,.12), inset 0 0 12px rgba(0,200,255,.05); }
   .mode-btn.active { color:#070510; background:#9cdb3c; border-color:#9cdb3c; box-shadow:0 0 22px rgba(156,219,60,.5); }
   .mode-btn:active { transform:scale(.98); }
-  .mode-note { font-family:'Syne',sans-serif; font-size:11px; letter-spacing:1px; color:#7e93a8; width:min(70vw, 300px); max-width:70vw; line-height:1.35; }
+  .mode-note { font-family:'Chakra Petch',sans-serif; font-size:12px; letter-spacing:.5px; color:#9fb1c4; width:min(70vw, 300px); max-width:70vw; line-height:1.35; }
   .player-name-input { width:100%; border:1px solid rgba(0,200,255,.42); background:rgba(7,5,16,.76); color:#fff;
     font-family:'Syne',sans-serif; font-weight:800; font-size:calc(15px * var(--btn-scale)); letter-spacing:1px;
     text-align:center; padding:calc(12px * var(--btn-scale)) calc(14px * var(--btn-scale)); outline:none;
@@ -180,7 +180,7 @@
         <input class="player-name-input" id="playerNameInput" maxlength="16" autocomplete="nickname" placeholder="NAME" aria-label="player name">
         <div class="name-error hidden" id="nameError">이름을 입력해줘</div>
       </div>
-      <div class="mode-note" id="modeNote">NORMAL은 지금 속도, EXTREME은 2배 속도</div>
+      <div class="mode-note" id="modeNote">NORMAL은 기본 모드. EXTREME은 2배 모드.</div>
       <button class="btn" id="startBtn" type="button">START ▲</button>
     </div>
 
@@ -363,7 +363,7 @@ function syncModeButtons(){
     btn.classList.toggle('active', btn.dataset.mode===active);
   });
   const note=document.getElementById('modeNote');
-  if(note) note.textContent = active==='extreme' ? 'EXTREME은 현재 속도의 2배' : 'NORMAL은 지금 속도';
+  if(note) note.textContent = active==='extreme' ? 'EXTREME은 2배 모드.' : 'NORMAL은 기본 모드.';
 }
 function syncRankLinks(){
   const mode=scoreMode();
