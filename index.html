@@ -505,7 +505,9 @@ function syncPlayerNameInput(){
 function requirePlayerName(){
   const input=document.getElementById('playerNameInput');
   const err=document.getElementById('nameError');
-  const next=cleanPlayerName(input ? input.value : playerName);
+  const stored=cleanPlayerName(lsGet('skyhook_player_name')||'');
+  const live=cleanPlayerName(input ? input.value : playerName);
+  const next=live || stored || playerName || 'PLAYER';
   if(!next){
     if(err) err.classList.remove('hidden');
     if(input) input.focus();
