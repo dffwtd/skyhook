@@ -33,6 +33,7 @@
   .top-alt { padding:calc(5px * var(--hud-scale)) calc(16px * var(--hud-scale)) calc(7px * var(--hud-scale)); min-width:calc(138px * var(--hud-scale)); justify-content:center; }
   .top-alt .value { display:flex; align-items:flex-end; font-size:calc(52px * var(--hud-scale)); line-height:1; letter-spacing:0; color:#fff; text-shadow:0 0 12px rgba(0,200,255,.8), 0 0 22px rgba(156,219,60,.24); }
   .top-alt .unit { font-size:.42em; line-height:1; margin-left:4px; color:#9cdb3c; text-shadow:0 0 12px rgba(156,219,60,.7); }
+  .top-mode { min-width:calc(106px * var(--hud-scale)); justify-content:center; color:#9cdb3c; font-family:'Syne',sans-serif; font-size:calc(18px * var(--hud-scale)); font-weight:800; letter-spacing:1px; text-shadow:0 0 12px rgba(156,219,60,.7); }
   #altMeter { position:absolute; right:11px; top:64px; bottom:84px; width:58px; z-index:6;
     pointer-events:none; font-family:'Syne',sans-serif; }
   #altMeter .meter-track { position:absolute; right:21px; top:0; bottom:0; width:6px;
@@ -153,6 +154,7 @@
     <canvas id="game"></canvas>
     <div id="topHud" aria-hidden="true">
       <div class="top-chip top-alt"><span class="value"><span class="num" id="topHeightNum">0</span><span class="unit">m</span></span></div>
+      <div class="top-chip top-mode"><span id="modeBadge">NORMAL</span></div>
     </div>
     <button class="pause-btn" id="pauseBtn" aria-label="pause game"></button>
     <a class="rank-btn rank-link" id="rankBtn" href="leaderboard.html" aria-label="open leaderboard">RANK</a>
@@ -257,6 +259,8 @@ function updateUiScale(){
   stage.style.setProperty('--over-title-scale',overScale);
   stage.style.setProperty('--pause-title-scale',pauseScale);
   stage.style.setProperty('--btn-scale',btnScale);
+  const modeBadge=document.getElementById('modeBadge');
+  if(modeBadge) modeBadge.textContent=scoreMode().toUpperCase();
 }
 
 const AudioCtor=window.AudioContext||window.webkitAudioContext;
@@ -361,7 +365,7 @@ const GRAV=0.34;
 let state='start';
 let selectedMode=String(lsGet('skyhook_mode')||'normal');
 if(selectedMode!=='extreme') selectedMode='normal';
-let speedMul=selectedMode==='extreme' ? 1.2 : 0.8;
+let speedMul=selectedMode==='extreme' ? 1.2 : 0.85;
 let best=Number(lsGet(bestKey(selectedMode))||0);
 let playerName='';
 let fogArmed=false;
@@ -379,7 +383,7 @@ function syncModeButtons(){
     btn.classList.toggle('active', btn.dataset.mode===active);
   });
   const note=document.getElementById('modeNote');
-  if(note) note.textContent = active==='extreme' ? 'EXTREME은 1.2배 모드.' : 'NORMAL은 0.8배 모드.';
+  if(note) note.textContent = active==='extreme' ? 'EXTREME은 1.2배 모드.' : 'NORMAL은 0.85배 모드.';
 }
 function syncRankLinks(){
   const mode=scoreMode();
@@ -388,7 +392,7 @@ function syncRankLinks(){
 }
 function applyMode(mode){
   selectedMode = mode==='extreme' ? 'extreme' : 'normal';
-  speedMul = selectedMode==='extreme' ? 1.2 : 0.8;
+  speedMul = selectedMode==='extreme' ? 1.2 : 0.85;
   lsSet('skyhook_mode', selectedMode);
   syncModeButtons();
   syncRankLinks();
