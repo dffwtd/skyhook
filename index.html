@@ -684,6 +684,14 @@ function drawHazard(h){
 }
 
 function startGame(){
+  const input=document.getElementById('playerNameInput');
+  if(input) input.blur();
+  const typed=cleanPlayerName(input ? input.value : playerName);
+  if(typed){
+    playerName=typed;
+    lsSet('skyhook_player_name',playerName);
+    if(input) input.value=playerName;
+  }
   if(!requirePlayerName()) return;
   applyMode(scoreMode());
   resumeAudio();reset();state='play';
