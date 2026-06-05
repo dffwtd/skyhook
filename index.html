@@ -506,12 +506,13 @@ function release(){
     const tx=-Math.sin(rope.angle), ty=Math.cos(rope.angle);
     const speed=Math.hypot(player.vx,player.vy);
     const stretch=Math.max(0,rope.len-rope.baseLen);
-    const turnBoost=1+rope.turns*0.55;
-    const launch=Math.min(2.0,1 + speed*0.045 + stretch*0.0045 + rope.turns*0.16);
+    const elasticBoost=selectedMode==='extreme' ? 1.18 : 1;
+    const turnBoost=(1+rope.turns*0.55)*elasticBoost;
+    const launch=Math.min(2.25,1 + speed*0.045 + stretch*0.0045 + rope.turns*0.16)*elasticBoost;
     player.vx=player.vx*launch;
     player.vy=player.vy*launch;
     if(player.vy > -1.2){
-      const lift=Math.min(38, 8 + speed*0.62 + stretch*0.06 + rope.turns*3.0);
+      const lift=Math.min(42, 8 + speed*0.62 + stretch*0.06 + rope.turns*3.0)*elasticBoost;
       player.vy -= lift*turnBoost;
       player.vx += tx*lift*0.30*turnBoost;
     }
@@ -770,7 +771,7 @@ function update(){
   frame++;
   if(state==='play'){
     const S=speed();
-    const FALL_S=0.88;
+    const FALL_S=0.84;
     // stand on platform until first action
     if(player.onGround && !started){
       player.y = platform.y - 12; player.vy=0;
