@@ -27,20 +27,22 @@
     background:rgba(7,5,16,.72); color:#00c8ff; text-decoration:none; font-family:'Syne',sans-serif;
     font-size:12px; font-weight:800; letter-spacing:1px; box-shadow:0 0 16px rgba(0,200,255,.18), inset 0 0 12px rgba(0,200,255,.08); }
   .title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(24px,4.7vh,42px); line-height:.9;
-    letter-spacing:0; text-align:center; color:#fff; text-shadow:0 0 20px #00c8ff,0 0 36px rgba(156,219,60,.45); }
+    letter-spacing:0; text-align:center; color:#fff; text-shadow:0 0 20px #00c8ff,0 0 36px rgba(156,219,60,.45);
+    margin-bottom:14px; }
   .title span { color:#9cdb3c; text-shadow:0 0 18px #9cdb3c; }
-  .panel { position:relative; z-index:1; margin-top:24px; border:1px solid rgba(0,200,255,.28);
+  .panel { position:relative; z-index:1; margin-top:30px; border:1px solid rgba(0,200,255,.28);
     background:rgba(7,5,16,.62); box-shadow:0 0 24px rgba(0,200,255,.12), inset 0 0 18px rgba(0,200,255,.06); }
-  .row { display:grid; grid-template-columns:54px minmax(0,1fr) 92px 116px; gap:10px; align-items:center; min-height:62px;
-    padding:0 8px; border-bottom:1px solid rgba(0,200,255,.12); }
+  .row { display:grid; grid-template-columns:minmax(42px,52px) minmax(0,1.4fr) minmax(70px,84px) minmax(96px,120px); gap:10px; align-items:start; min-height:62px;
+    padding:8px 8px 10px; border-bottom:1px solid rgba(0,200,255,.12); }
   .row:last-child { border-bottom:0; }
-  .head { min-height:44px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:14px; letter-spacing:0; }
-  .rank { font-family:'Syne',sans-serif; color:#9cdb3c; font-weight:800; font-size:22px; letter-spacing:0; }
-  .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:22px; min-width:0; }
-  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:22px; letter-spacing:0; white-space:nowrap; }
-  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:14px; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .head { min-height:44px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:14px; letter-spacing:0; align-items:end; }
+  .rank { font-family:'Syne',sans-serif; color:#9cdb3c; font-weight:800; font-size:22px; letter-spacing:0; min-width:0; line-height:1; white-space:nowrap; }
+  .name { overflow:hidden; text-overflow:ellipsis; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:22px; min-width:0; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:22px; letter-spacing:0; min-width:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:13px; letter-spacing:0; min-width:0; line-height:1.05; white-space:normal; display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  .time .date, .time .clock { display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .state { padding:24px 14px; text-align:center; color:#9fb1c4; line-height:1.45; font-size:13px; }
-  .mode-tabs { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .mode-tabs { margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .mode-tab { border:1px solid rgba(0,200,255,.34); background:rgba(7,5,16,.7); color:#9fb1c4;
     font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:1px; padding:13px 0; cursor:pointer; }
   .mode-tab.active { color:#070510; background:#9cdb3c; border-color:#9cdb3c; }
@@ -49,9 +51,9 @@
 
   @media (max-width:380px) {
     .page { padding-left:10px; padding-right:10px; }
-    .row { grid-template-columns:44px minmax(0,1fr) 78px 104px; gap:6px; padding:0 6px; }
+    .row { grid-template-columns:minmax(38px,46px) minmax(0,1.15fr) minmax(62px,74px) minmax(82px,100px); gap:6px; padding:8px 6px 10px; }
     .rank,.name,.alt { font-size:17px; }
-    .time { font-size:12px; }
+    .time { font-size:11px; }
   }
 </style>
 </head>
@@ -93,15 +95,21 @@ function syncModeUI(){
   localBestEl.textContent='LOCAL BEST '+Number(localStorage.getItem(modeKey(currentMode))||0)+'m';
   if(backBtn) backBtn.href='index.html';
 }
-function fmtTime(v){
+function fmtTimeParts(v){
   const d=new Date(v);
-  if(Number.isNaN(d.getTime())) return '';
+  if(Number.isNaN(d.getTime())) return {date:'',clock:''};
   const pad=n=>String(n).padStart(2,'0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return {
+    date:`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,
+    clock:`${pad(d.getHours())}:${pad(d.getMinutes())}`
+  };
 }
 function render(scores){
   if(!scores || !scores.length){ rows.innerHTML='<div class="state">아직 등록된 기록이 없습니다</div>'; return; }
-  rows.innerHTML=scores.map((s,i)=>'<div class="row"><div class="rank">#'+(i+1)+'</div><div class="name">'+esc(s.player_name)+'</div><div class="alt">'+Number(s.altitude||0)+'m</div><div class="time">'+esc(fmtTime(s.created_at))+'</div></div>').join('');
+  rows.innerHTML=scores.map((s,i)=>{
+    const t=fmtTimeParts(s.created_at);
+    return '<div class="row"><div class="rank">#'+(i+1)+'</div><div class="name">'+esc(s.player_name)+'</div><div class="alt">'+Number(s.altitude||0)+'m</div><div class="time"><span class="date">'+esc(t.date)+'</span><span class="clock">'+esc(t.clock)+'</span></div></div>';
+  }).join('');
 }
 async function loadScores(){
   const cfg=supabaseSettings();

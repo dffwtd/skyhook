@@ -34,6 +34,8 @@
   .top-alt .value { display:flex; align-items:flex-end; font-size:calc(52px * var(--hud-scale)); line-height:1; letter-spacing:0; color:#fff; text-shadow:0 0 12px rgba(0,200,255,.8), 0 0 22px rgba(156,219,60,.24); }
   .top-alt .unit { font-size:.42em; line-height:1; margin-left:4px; color:#9cdb3c; text-shadow:0 0 12px rgba(156,219,60,.7); }
   .top-mode { min-width:calc(106px * var(--hud-scale)); justify-content:center; color:#9cdb3c; font-family:'Syne',sans-serif; font-size:calc(18px * var(--hud-scale)); font-weight:800; letter-spacing:1px; text-shadow:0 0 12px rgba(156,219,60,.7); }
+  .top-mode.normal { color:#9cdb3c; text-shadow:0 0 12px rgba(156,219,60,.75); border-color:rgba(156,219,60,.42); }
+  .top-mode.extreme { color:#ff3b30; text-shadow:0 0 12px rgba(255,59,48,.78); border-color:rgba(255,59,48,.42); }
   #altMeter { position:absolute; right:11px; top:64px; bottom:84px; width:58px; z-index:6;
     pointer-events:none; font-family:'Syne',sans-serif; }
   #altMeter .meter-track { position:absolute; right:21px; top:0; bottom:0; width:6px;
@@ -101,9 +103,15 @@
   .mode-btn { border:1px solid rgba(0,200,255,.34); background:rgba(7,5,16,.7); color:#9fb1c4;
     font-family:'Syne',sans-serif; font-weight:800; font-size:calc(12px * var(--btn-scale)); letter-spacing:calc(1.5px * var(--btn-scale));
     padding:calc(11px * var(--btn-scale)) 0; cursor:pointer; box-shadow:0 0 16px rgba(0,200,255,.12), inset 0 0 12px rgba(0,200,255,.05); }
-  .mode-btn.active { color:#070510; background:#9cdb3c; border-color:#9cdb3c; box-shadow:0 0 22px rgba(156,219,60,.5); }
+  .mode-btn[data-mode="normal"] { color:#9cdb3c; border-color:rgba(156,219,60,.42); box-shadow:0 0 16px rgba(156,219,60,.12), inset 0 0 12px rgba(156,219,60,.05); }
+  .mode-btn[data-mode="extreme"] { color:#ff8a80; border-color:rgba(255,59,48,.42); box-shadow:0 0 16px rgba(255,59,48,.12), inset 0 0 12px rgba(255,59,48,.05); }
+  .mode-btn.active { color:#070510; }
+  .mode-btn[data-mode="normal"].active { background:#9cdb3c; border-color:#9cdb3c; box-shadow:0 0 22px rgba(156,219,60,.5); }
+  .mode-btn[data-mode="extreme"].active { background:#ff3b30; border-color:#ff3b30; box-shadow:0 0 22px rgba(255,59,48,.55); }
   .mode-btn:active { transform:scale(.98); }
   .mode-note { font-family:'Chakra Petch',sans-serif; font-size:12px; letter-spacing:.5px; color:#9fb1c4; width:min(70vw, 300px); max-width:70vw; line-height:1.35; }
+  .mode-note.normal { color:#9cdb3c; }
+  .mode-note.extreme { color:#ff8a80; }
   .player-name-input { width:100%; border:1px solid rgba(0,200,255,.42); background:rgba(7,5,16,.76); color:#fff;
     font-family:'Syne',sans-serif; font-weight:800; font-size:calc(15px * var(--btn-scale)); letter-spacing:1px;
     text-align:center; padding:calc(12px * var(--btn-scale)) calc(14px * var(--btn-scale)); outline:none;
@@ -118,7 +126,8 @@
   #pauseOverlay .resume-btn { min-width:min(220px,70vw); width:min(70vw, 280px); }
   #pauseOverlay .resume-btn { background:#ff3b30; color:#fff; box-shadow:0 0 26px rgba(255,59,48,.7); font-size:calc(clamp(12px,1.8vh,16px) * var(--pause-title-scale)); padding:calc(clamp(10px,2vh,13px) * var(--pause-title-scale)) calc(clamp(22px,6vw,40px) * var(--pause-title-scale)); }
   #pauseOverlay .resume-btn:active { transform:scale(.95); }
-  .over-rank-btn { display:flex; align-items:center; justify-content:center; text-decoration:none; background:#9cdb3c; color:#070510; box-shadow:0 0 26px rgba(156,219,60,.62); }
+  #pauseOverlay .pause-reset-btn { background:#00c8ff; color:#070510; box-shadow:0 0 26px rgba(0,200,255,.7); }
+  #pauseOverlay .pause-reset-btn:active { transform:scale(.95); }
 
   /* enhanced start screen */
   .badge { font-family:'Syne',sans-serif; font-size:11px; letter-spacing:5px; color:#9cdb3c;
@@ -146,6 +155,33 @@
   @keyframes gl2 { 0%,90%,100%{transform:translate(0,0)} 91%{transform:translate(3px,-1px)} 95%{transform:translate(-2px,1px)} }
   .btn { animation:pulse 2.2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{box-shadow:0 0 26px rgba(0,200,255,.7)} 50%{box-shadow:0 0 40px rgba(0,200,255,1)} }
+
+  @media (max-width:390px) {
+    #start { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+    #start .mode-select {
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      width:calc(100vw - 20px);
+      max-width:none;
+      z-index:12;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+    }
+    #start .mode-btn {
+      font-size:calc(11px * var(--btn-scale));
+      padding:calc(9px * var(--btn-scale)) 0;
+    }
+    #start .name-form,
+    #start .mode-note,
+    #start .btn {
+      width:min(78vw, 320px);
+      max-width:78vw;
+    }
+    #start .mode-note { margin-bottom:44px; }
+    #start .title { width:min(82vw, 360px); max-width:82vw; }
+    #start .name-form { margin-top:2px; }
+  }
 </style>
 </head>
 <body>
@@ -157,7 +193,7 @@
       <div class="top-chip top-mode"><span id="modeBadge">NORMAL</span></div>
     </div>
     <button class="pause-btn" id="pauseBtn" aria-label="pause game"></button>
-    <a class="rank-btn rank-link" id="rankBtn" href="leaderboard.html" aria-label="open leaderboard">RANK</a>
+    <a class="rank-btn rank-link" id="rankBtn" href="leaderboard.html" aria-label="open leaderboard">RANKING</a>
     <div id="altMeter" aria-hidden="true">
       <div id="meterScale">200m</div>
       <div class="meter-track"><div id="altFill"></div></div>
@@ -189,7 +225,6 @@
         <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
       </div>
       <button class="btn" id="retryBtn">RETRY ▲</button>
-      <a class="btn over-rank-btn rank-link" href="leaderboard.html">RANKING</a>
     </div>
     <div id="pauseOverlay" class="screen hidden">
       <div class="title glitch" data-text="PAUSED">PAUSED</div>
@@ -199,6 +234,7 @@
         <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
       </div>
       <button class="btn resume-btn" id="resumeBtn">일시정지 해제</button>
+      <button class="btn" id="pauseResetBtn" type="button">RESET ▲</button>
     </div>
   </div>
 </div>
@@ -260,7 +296,12 @@ function updateUiScale(){
   stage.style.setProperty('--pause-title-scale',pauseScale);
   stage.style.setProperty('--btn-scale',btnScale);
   const modeBadge=document.getElementById('modeBadge');
-  if(modeBadge) modeBadge.textContent=scoreMode().toUpperCase();
+  if(modeBadge){
+    const mode=scoreMode();
+    modeBadge.textContent=mode.toUpperCase();
+    modeBadge.classList.toggle('extreme', mode==='extreme');
+    modeBadge.classList.toggle('normal', mode!=='extreme');
+  }
 }
 
 const AudioCtor=window.AudioContext||window.webkitAudioContext;
@@ -383,7 +424,11 @@ function syncModeButtons(){
     btn.classList.toggle('active', btn.dataset.mode===active);
   });
   const note=document.getElementById('modeNote');
-  if(note) note.textContent = active==='extreme' ? 'EXTREME은 1.2배 모드.' : 'NORMAL은 0.85배 모드.';
+  if(note){
+    note.textContent = active==='extreme' ? 'EXTREME은 1.2배 모드.' : 'NORMAL은 0.85배 모드.';
+    note.classList.toggle('extreme', active==='extreme');
+    note.classList.toggle('normal', active!=='extreme');
+  }
 }
 function syncRankLinks(){
   const mode=scoreMode();
@@ -510,7 +555,7 @@ function release(){
     const tx=-Math.sin(rope.angle), ty=Math.cos(rope.angle);
     const speed=Math.hypot(player.vx,player.vy);
     const stretch=Math.max(0,rope.len-rope.baseLen);
-    const elasticBoost=selectedMode==='extreme' ? 1.18 : 1;
+    const elasticBoost=selectedMode==='extreme' ? 1.18 : 0.88;
     const turnBoost=(1+rope.turns*0.55)*elasticBoost;
     const launch=Math.min(2.25,1 + speed*0.045 + stretch*0.0045 + rope.turns*0.16)*elasticBoost;
     player.vx=player.vx*launch;
@@ -569,6 +614,7 @@ window.addEventListener('keydown',e=>{
 window.addEventListener('keyup',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();release();}});
 const startBtn=document.getElementById('startBtn');
 const retryBtn=document.getElementById('retryBtn');
+const pauseResetBtn=document.getElementById('pauseResetBtn');
 if(startBtn){
   const startTap=e=>{ e.preventDefault(); e.stopPropagation(); startGame(); };
   startBtn.addEventListener('pointerdown',startTap);
@@ -578,6 +624,11 @@ if(retryBtn){
   const retryTap=e=>{ e.preventDefault(); e.stopPropagation(); startGame(); };
   retryBtn.addEventListener('pointerdown',retryTap);
   retryBtn.addEventListener('click',retryTap);
+}
+if(pauseResetBtn){
+  const pauseResetTap=e=>{ e.preventDefault(); e.stopPropagation(); startGame(); };
+  pauseResetBtn.addEventListener('pointerdown',pauseResetTap);
+  pauseResetBtn.addEventListener('click',pauseResetTap);
 }
 document.querySelectorAll('.mode-btn').forEach(btn=>{
   const modeTap=e=>{
@@ -643,7 +694,8 @@ function explodeAt(x,y){
 }
 
 function hitHazard(h){
-  if(state!=='play')return;
+  if(state!=='play' || h.dead) return;
+  h.dead=true;
   const cx=h.x+h.w/2, cy=h.y+h.h/2;
   explodeAt(cx,cy);
   sfx('explode');
@@ -878,7 +930,7 @@ function update(){
         if(h.x<8||h.x>W-8-h.w)h.vx*=-1;
       }
     }
-    hazards=hazards.filter(h=>h.y < camY+H+140);
+    hazards=hazards.filter(h=>!h.dead && h.y < camY+H+140);
 
 
     // death: touch the rising fog, or collide with a hazard.
