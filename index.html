@@ -646,7 +646,7 @@ function hitHazard(h){
   player.vx*=0.02; player.vy*=0.02;
   player.vx += (Math.random()*12-6);
   player.vy += (Math.random()*10-5);
-  camY -= 12*speed();
+  camY -= 12*FALL_S;
   deathTimer=72;
 }
 
@@ -770,6 +770,7 @@ function update(){
   frame++;
   if(state==='play'){
     const S=speed();
+    const FALL_S=0.88;
     // stand on platform until first action
     if(player.onGround && !started){
       player.y = platform.y - 12; player.vy=0;
@@ -815,8 +816,8 @@ function update(){
           player.vy*=0.35;
         }
       } else {
-        player.vy+=GRAV*S;
-        player.x+=player.vx*S; player.y+=player.vy*S;
+        player.vy+=GRAV*FALL_S;
+        player.x+=player.vx*FALL_S; player.y+=player.vy*FALL_S;
         player.vx*=0.995; player.vy*=0.9975;
       }
     }
@@ -847,7 +848,7 @@ function update(){
     if(targetCam<camY){
       camY += (targetCam-camY)*0.14*S;
     }else if(!rope.active && player.vy>1.2 && targetCam>camY){
-      camY += Math.min(targetCam-camY, H*0.035*S);
+      camY += Math.min(targetCam-camY, H*0.035*FALL_S);
     }
 
     if(player.y<topMost) topMost=player.y;
@@ -878,9 +879,9 @@ function update(){
     // death: touch the rising fog, or collide with a hazard.
     if(deathTimer>0){
       deathTimer--;
-      camY -= Math.sin(deathTimer*1.35)*7.8*S;
-      camY += (Math.random()*18-9)*S;
-      if(deathTimer%2===0) camY += Math.sin(frame*2.4)*4.5*S;
+      camY -= Math.sin(deathTimer*1.35)*7.8*FALL_S;
+      camY += (Math.random()*18-9)*FALL_S;
+      if(deathTimer%2===0) camY += Math.sin(frame*2.4)*4.5*FALL_S;
       if(deathTimer===0) gameOver();
     }
     else if(started && player.y > fogLineY()){ gameOver(); }
