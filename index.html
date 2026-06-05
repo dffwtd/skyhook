@@ -87,7 +87,6 @@
     clip-path:polygon(8% 0,100% 0,92% 100%,0 100%); box-shadow:0 0 26px rgba(0,200,255,.7); transition:transform .12s;
     width:min(70vw, 320px); max-width:70vw; white-space:nowrap; }
   .btn:active { transform:scale(.95); }
-  .over-score { font-family:'Syne',sans-serif; font-size:clamp(15px,2.2vh,18px); letter-spacing:clamp(1px,.3vh,2px); color:#9fb1c4; width:min(70vw, 100%); max-width:70vw; overflow-wrap:anywhere; word-break:keep-all; }
   #over { background:radial-gradient(circle at 50% 38%, rgba(255,255,255,.08), rgba(255,255,255,0) 36%), radial-gradient(circle at 50% 52%, rgba(255,59,48,.18), rgba(0,0,0,0) 55%), rgba(0,0,0,.9); }
   #over .title { font-size:calc(clamp(24px,4.8vh,50px) * var(--over-title-scale)); letter-spacing:calc(clamp(1px,.35vh,3px) * var(--over-title-scale)); color:#fff; transform:skewX(-10deg) scaleY(1.08); text-shadow:0 0 10px rgba(255,255,255,.25), 0 0 18px rgba(255,59,48,.9), 0 0 46px rgba(255,59,48,.55);
     width:min(70vw, 100%); max-width:70vw; overflow-wrap:anywhere; word-break:keep-all; }
@@ -111,8 +110,6 @@
   .player-name-input:focus { border-color:#9cdb3c; box-shadow:0 0 22px rgba(156,219,60,.24), inset 0 0 12px rgba(156,219,60,.1); }
   .player-name-input::placeholder { color:rgba(159,177,196,.68); }
   .name-error { font-size:11px; line-height:1.2; color:#ff6b61; letter-spacing:1px; text-shadow:0 0 10px rgba(255,59,48,.35); }
-  #over .over-score { color:#e8edf4; text-shadow:0 0 12px rgba(255,255,255,.15); }
-  #over .over-score b { color:#ff3b30; font-size:calc(44px * var(--over-title-scale)); display:block; text-shadow:0 0 10px rgba(255,59,48,.6), 0 0 20px rgba(255,59,48,.28); }
   #pauseOverlay { background:rgba(0,0,0,.88); }
   #pauseOverlay .title { font-size:calc(clamp(22px,4.8vh,46px) * var(--pause-title-scale)); letter-spacing:calc(clamp(1px,.35vh,4px) * var(--pause-title-scale)); text-shadow:0 0 10px rgba(255,255,255,.22), 0 0 20px rgba(255,59,48,.72);
     width:min(70vw, 100%); max-width:70vw; overflow-wrap:anywhere; word-break:keep-all; }
@@ -121,8 +118,6 @@
   #pauseOverlay .resume-btn { background:#ff3b30; color:#fff; box-shadow:0 0 26px rgba(255,59,48,.7); font-size:calc(clamp(12px,1.8vh,16px) * var(--pause-title-scale)); padding:calc(clamp(10px,2vh,13px) * var(--pause-title-scale)) calc(clamp(22px,6vw,40px) * var(--pause-title-scale)); }
   #pauseOverlay .resume-btn:active { transform:scale(.95); }
   .over-rank-btn { display:flex; align-items:center; justify-content:center; text-decoration:none; background:#9cdb3c; color:#070510; box-shadow:0 0 26px rgba(156,219,60,.62); }
-  .newbest { color:#9cdb3c; font-weight:800; letter-spacing:3px; text-shadow:0 0 12px #9cdb3c; }
-  .hint { font-size:12px; letter-spacing:2px; color:#5d6b80; }
 
   /* enhanced start screen */
   .badge { font-family:'Syne',sans-serif; font-size:11px; letter-spacing:5px; color:#9cdb3c;
@@ -187,8 +182,6 @@
 
     <div id="over" class="screen hidden">
       <div class="title glitch" data-text="WASTED">WASTED</div>
-      <div class="over-score">ALTITUDE<b id="finalAlt">0</b></div>
-      <div id="bestMsg" class="hint"></div>
       <div class="mode-select overlay-mode" role="tablist" aria-label="game over mode">
         <button class="mode-btn active" data-mode="normal" type="button">NORMAL</button>
         <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
@@ -211,17 +204,24 @@
 <script src="supabase-config.js"></script>
 <script>
 const cv=document.getElementById('game'), ctx=cv.getContext('2d'), stage=document.getElementById('stage');
-let W=460,H=818,dpr=1;
+const WORLD_W=460, WORLD_H=818;
+let W=WORLD_W,H=WORLD_H,dpr=1,canvasW=WORLD_W,canvasH=WORLD_H,viewScale=1,viewX=0,viewY=0;
 function resize(){
   const r=stage.getBoundingClientRect();
-  W=r.width; H=r.height;
+  canvasW=r.width; canvasH=r.height;
+  W=WORLD_W; H=WORLD_H;
   updateUiScale();
   dpr=Math.min(window.devicePixelRatio||1, perf.dprCap);
-  cv.width=W*dpr; cv.height=H*dpr;
-  cv.style.width=r.width+'px'; cv.style.height=r.height+'px';
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+  cv.width=Math.max(1,Math.round(canvasW*dpr));
+  cv.height=Math.max(1,Math.round(canvasH*dpr));
+  cv.style.width=canvasW+'px'; cv.style.height=canvasH+'px';
+  viewScale=Math.min(canvasW/WORLD_W,canvasH/WORLD_H);
+  viewX=(canvasW-WORLD_W*viewScale)*0.5;
+  viewY=(canvasH-WORLD_H*viewScale)*0.5;
   ctx.imageSmoothingEnabled=false;
 }
+function setScreenTransform(){ ctx.setTransform(dpr,0,0,dpr,0,0); }
+function setWorldTransform(){ ctx.setTransform(dpr*viewScale,0,0,dpr*viewScale,dpr*viewX,dpr*viewY); }
 window.addEventListener('resize',resize);
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
@@ -233,10 +233,10 @@ function supabaseSettings(){
 }
 const perf={quality:1,dprCap:1.75,starCount:70,rainCount:48,gasCount:8,layerSkip:1,particleCap:220,trailCap:12,fx:1};
 function updateUiScale(){
-  const widthScale=W/460;
-  const heightScale=H/818;
+  const widthScale=canvasW/WORLD_W;
+  const heightScale=canvasH/WORLD_H;
   const base=Math.max(0.58,Math.min(1,widthScale,heightScale));
-  const mobile=Math.min(W,H) < 600;
+  const mobile=Math.min(canvasW,canvasH) < 600;
   perf.quality=base;
   perf.dprCap=mobile ? 1 : 1.45;
   perf.starCount=mobile ? 14 : 46;
@@ -761,8 +761,6 @@ function gameOver(){
   submitScore();
   document.getElementById('pauseOverlay').classList.add('hidden');
   playWastedSting();
-  document.getElementById('finalAlt').textContent=altitude+'m';
-  document.getElementById('bestMsg').innerHTML=nb?'<span class="newbest">NEW BEST!</span>':'BEST '+best+'m';
   document.getElementById('over').classList.remove('hidden');
   syncPauseButton();
 }
@@ -948,7 +946,11 @@ function drawHero(wx,wy,face){
 }
 
 function draw(){
-  ctx.clearRect(0,0,W,H);
+  setScreenTransform();
+  ctx.clearRect(0,0,canvasW,canvasH);
+  ctx.fillStyle='#070510';
+  ctx.fillRect(0,0,canvasW,canvasH);
+  setWorldTransform();
   ctx.save();
   ctx.translate(0,-camY);
 
