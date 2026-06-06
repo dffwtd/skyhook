@@ -157,8 +157,13 @@
   @keyframes pulse { 0%,100%{box-shadow:0 0 26px rgba(0,200,255,.7)} 50%{box-shadow:0 0 40px rgba(0,200,255,1)} }
 
   @media (max-width:390px) {
-    #start { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
-    #start .mode-select {
+    .screen { justify-content:flex-start; align-items:center; padding-top:12px; }
+    #start { padding-bottom: calc(132px + env(safe-area-inset-bottom)); }
+    #over { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+    #pauseOverlay { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+    #start .mode-select,
+    #over .overlay-mode,
+    #pauseOverlay .overlay-mode {
       position:absolute;
       left:10px;
       bottom:10px;
@@ -168,7 +173,9 @@
       grid-template-columns:1fr 1fr;
       gap:6px;
     }
-    #start .mode-btn {
+    #start .mode-btn,
+    #over .mode-btn,
+    #pauseOverlay .mode-btn {
       font-size:calc(11px * var(--btn-scale));
       padding:calc(9px * var(--btn-scale)) 0;
     }
@@ -182,127 +189,8 @@
     #start .title { width:min(82vw, 360px); max-width:82vw; }
     #start .name-form { margin-top:2px; }
   }
-</style>
-</head>
-<body>
-<div id="wrap">
-  <div id="stage">
-    <canvas id="game"></canvas>
-    <div id="topHud" aria-hidden="true">
-      <div class="top-chip top-alt"><span class="value"><span class="num" id="topHeightNum">0</span><span class="unit">m</span></span></div>
-      <div class="top-chip top-mode"><span id="modeBadge">NORMAL</span></div>
-    </div>
-    <button class="pause-btn" id="pauseBtn" aria-label="pause game"></button>
-    <a class="rank-btn rank-link" id="rankBtn" href="leaderboard.html" aria-label="open leaderboard">RANKING</a>
-    <div id="altMeter" aria-hidden="true">
-      <div id="meterScale">200m</div>
-      <div class="meter-track"><div id="altFill"></div></div>
-      <div class="meter-mark" id="meterBest"><div class="meter-tag" id="meterBestText">0m</div></div>
-      <div class="meter-mark" id="meterNow"><div class="meter-tag" id="meterNowText">0m</div></div>
-      <div class="meter-mark" id="meterGas"><div class="meter-tag" id="meterGasText">GAS</div></div>
-      <div id="meterTnt" aria-hidden="true"></div>
-      <div id="meterBase">0m</div>
-    </div>
 
-    <div id="start" class="screen">
-      <div class="title glitch" data-text="SKYHOOK">SKYHOOK<br><span>ASCENT</span></div>
-      <div class="mode-select" id="modeSelect" role="tablist" aria-label="game mode">
-        <button class="mode-btn active" id="modeNormal" data-mode="normal" type="button">NORMAL</button>
-        <button class="mode-btn" id="modeExtreme" data-mode="extreme" type="button">EXTREME</button>
-      </div>
-      <div class="name-form" id="nameForm">
-        <input class="player-name-input" id="playerNameInput" maxlength="16" autocomplete="nickname" placeholder="NAME" aria-label="player name">
-        <div class="name-error hidden" id="nameError">이름을 입력해줘</div>
-      </div>
-      <div class="mode-note" id="modeNote">NORMAL은 0.8배 모드. EXTREME은 1.2배 모드.</div>
-      <button class="btn" id="startBtn" type="button">START ▲</button>
-    </div>
 
-    <div id="over" class="screen hidden">
-      <div class="title glitch" data-text="WASTED">WASTED</div>
-      <div class="mode-select overlay-mode" role="tablist" aria-label="game over mode">
-        <button class="mode-btn active" data-mode="normal" type="button">NORMAL</button>
-        <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
-      </div>
-      <button class="btn" id="retryBtn">RETRY ▲</button>
-    </div>
-    <div id="pauseOverlay" class="screen hidden">
-      <div class="title glitch" data-text="PAUSED">PAUSED</div>
-      <div class="pause-note">일시정지 중</div>
-      <div class="mode-select overlay-mode" role="tablist" aria-label="paused mode">
-        <button class="mode-btn active" data-mode="normal" type="button">NORMAL</button>
-        <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
-      </div>
-      <button class="btn resume-btn" id="resumeBtn">일시정지 해제</button>
-      <button class="btn" id="pauseResetBtn" type="button">RESET ▲</button>
-    </div>
-  </div>
-</div>
-
-<script src="supabase-config.js"></script>
-<script>
-const cv=document.getElementById('game'), ctx=cv.getContext('2d'), stage=document.getElementById('stage');
-const WORLD_W=460, WORLD_H=818;
-let W=WORLD_W,H=WORLD_H,dpr=1,canvasW=WORLD_W,canvasH=WORLD_H,viewScale=1,viewX=0,viewY=0;
-function resize(){
-  const r=stage.getBoundingClientRect();
-  canvasW=r.width; canvasH=r.height;
-  W=WORLD_W; H=WORLD_H;
-  updateUiScale();
-  dpr=Math.min(window.devicePixelRatio||1, perf.dprCap);
-  cv.width=Math.max(1,Math.round(canvasW*dpr));
-  cv.height=Math.max(1,Math.round(canvasH*dpr));
-  cv.style.width=canvasW+'px'; cv.style.height=canvasH+'px';
-  viewScale=Math.min(canvasW/WORLD_W,canvasH/WORLD_H);
-  viewX=(canvasW-WORLD_W*viewScale)*0.5;
-  viewY=(canvasH-WORLD_H*viewScale)*0.5;
-  ctx.imageSmoothingEnabled=false;
-}
-function setScreenTransform(){ ctx.setTransform(dpr,0,0,dpr,0,0); }
-function setWorldTransform(){ ctx.setTransform(dpr*viewScale,0,0,dpr*viewScale,dpr*viewX,dpr*viewY); }
-window.addEventListener('resize',resize);
-function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
-function supabaseSettings(){
-  const cfg=window.SKYHOOK_SUPABASE||{};
-  const url=String(cfg.url||'').replace(/\/+$/,'');
-  const key=String(cfg.anonKey||cfg.anon_key||'');
-  return url && key ? {url,key} : null;
-}
-const perf={quality:1,dprCap:1.75,starCount:70,rainCount:48,gasCount:8,layerSkip:1,particleCap:220,trailCap:12,fx:1};
-function updateUiScale(){
-  const widthScale=canvasW/WORLD_W;
-  const heightScale=canvasH/WORLD_H;
-  const base=Math.max(0.58,Math.min(1,widthScale,heightScale));
-  const mobile=Math.min(canvasW,canvasH) < 600;
-  perf.quality=base;
-  perf.dprCap=mobile ? 1 : 1.45;
-  perf.starCount=mobile ? 14 : 46;
-  perf.rainCount=mobile ? 10 : 30;
-  perf.gasCount=mobile ? 4 : 8;
-  perf.layerSkip=1;
-  perf.particleCap=mobile ? 80 : 160;
-  perf.trailCap=mobile ? 5 : 9;
-  perf.fx=mobile ? 0.38 : 0.8;
-  const startScale=Math.max(0.68,Math.min(1,base*0.92));
-  const overScale=Math.max(0.36,Math.min(0.82,base*0.68));
-  const pauseScale=Math.max(0.38,Math.min(0.78,base*0.64));
-  const btnScale=Math.max(0.62,Math.min(0.84,base*0.88));
-  stage.style.setProperty('--hud-scale',Math.max(0.62,Math.min(0.9,base*0.78)));
-  stage.style.setProperty('--start-title-scale',startScale);
-  const startTitle=document.querySelector('#start .title');
-  if(startTitle){ startTitle.style.transform='scale(1)'; }
-  stage.style.setProperty('--over-title-scale',overScale);
-  stage.style.setProperty('--pause-title-scale',pauseScale);
-  stage.style.setProperty('--btn-scale',btnScale);
-  const modeBadge=document.getElementById('modeBadge');
-  if(modeBadge){
-    const mode=scoreMode();
-    modeBadge.textContent=mode.toUpperCase();
-    modeBadge.classList.toggle('extreme', mode==='extreme');
-    modeBadge.classList.toggle('normal', mode!=='extreme');
-  }
-}
 
 const AudioCtor=window.AudioContext||window.webkitAudioContext;
 const tntSprite=new Image();
@@ -936,6 +824,11 @@ function update(){
     // death: touch the rising fog, or collide with a hazard.
     if(deathTimer>0){
       deathTimer--;
+      player.vy += GRAV*(FALL_S*0.55);
+      player.x += player.vx*FALL_S;
+      player.y += player.vy*FALL_S;
+      player.vx *= 0.994;
+      player.vy *= 0.992;
       camY -= Math.sin(deathTimer*1.35)*7.8*FALL_S;
       camY += (Math.random()*18-9)*FALL_S;
       if(deathTimer%2===0) camY += Math.sin(frame*2.4)*4.5*FALL_S;
