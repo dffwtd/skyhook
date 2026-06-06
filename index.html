@@ -190,8 +190,65 @@
     #start .name-form { margin-top:2px; }
   }
 
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+    <canvas id="game"></canvas>
+    <div id="topHud" aria-hidden="true">
+      <div class="top-chip top-alt"><span class="value"><span class="num" id="topHeightNum">0</span><span class="unit">m</span></span></div>
+      <div class="top-chip top-mode"><span id="modeBadge">NORMAL</span></div>
+    </div>
+    <button class="pause-btn" id="pauseBtn" aria-label="pause game"></button>
+    <a class="rank-btn rank-link" id="rankBtn" href="leaderboard.html" aria-label="open leaderboard">RANKING</a>
+    <div id="altMeter" aria-hidden="true">
+      <div id="meterScale">200m</div>
+      <div class="meter-track"><div id="altFill"></div></div>
+      <div class="meter-mark" id="meterBest"><div class="meter-tag" id="meterBestText">0m</div></div>
+      <div class="meter-mark" id="meterNow"><div class="meter-tag" id="meterNowText">0m</div></div>
+      <div class="meter-mark" id="meterGas"><div class="meter-tag" id="meterGasText">GAS</div></div>
+      <div id="meterTnt" aria-hidden="true"></div>
+      <div id="meterBase">0m</div>
+    </div>
 
+    <div id="start" class="screen">
+      <div class="title glitch" data-text="SKYHOOK">SKYHOOK<br><span>ASCENT</span></div>
+      <div class="mode-select" id="modeSelect" role="tablist" aria-label="game mode">
+        <button class="mode-btn active" id="modeNormal" data-mode="normal" type="button">NORMAL</button>
+        <button class="mode-btn" id="modeExtreme" data-mode="extreme" type="button">EXTREME</button>
+      </div>
+      <div class="name-form" id="nameForm">
+        <input class="player-name-input" id="playerNameInput" maxlength="16" autocomplete="nickname" placeholder="NAME" aria-label="player name">
+        <div class="name-error hidden" id="nameError">이름을 입력해줘</div>
+      </div>
+      <div class="mode-note" id="modeNote">NORMAL은 0.85배 모드. EXTREME은 1.2배 모드.</div>
+      <button class="btn" id="startBtn" type="button">START ▲</button>
+    </div>
 
+    <div id="over" class="screen hidden">
+      <div class="title glitch" data-text="WASTED">WASTED</div>
+      <div class="mode-select overlay-mode" role="tablist" aria-label="game over mode">
+        <button class="mode-btn active" data-mode="normal" type="button">NORMAL</button>
+        <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
+      </div>
+      <button class="btn" id="retryBtn">RETRY ▲</button>
+    </div>
+    <div id="pauseOverlay" class="screen hidden">
+      <div class="title glitch" data-text="PAUSED">PAUSED</div>
+      <div class="pause-note">일시정지 중</div>
+      <div class="mode-select overlay-mode" role="tablist" aria-label="paused mode">
+        <button class="mode-btn active" data-mode="normal" type="button">NORMAL</button>
+        <button class="mode-btn" data-mode="extreme" type="button">EXTREME</button>
+      </div>
+      <button class="btn resume-btn" id="resumeBtn">일시정지 해제</button>
+      <button class="btn" id="pauseResetBtn" type="button">RESET ▲</button>
+    </div>
+  </div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script>
 const AudioCtor=window.AudioContext||window.webkitAudioContext;
 const tntSprite=new Image();
 tntSprite.src='TNT.png';
