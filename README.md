@@ -34,3 +34,6 @@ window.SKYHOOK_SUPABASE = {
 ```
 
 Only use the public anon/publishable key. Do not put a service role key in this static site.
+
+
+If you already created the table earlier, rerun `supabase-leaderboard.sql` after schema changes so updated checks are applied.

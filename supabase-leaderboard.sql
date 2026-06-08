@@ -17,7 +17,7 @@ create table if not exists public.leaderboard_scores (
   constraint leaderboard_scores_player_name_no_control
     check (player_name !~ '[[:cntrl:]]'),
   constraint leaderboard_scores_altitude_range
-    check (altitude between 0 and 100000),
+    check (altitude between 0 and 1000000),
   constraint leaderboard_scores_mode_check
     check (mode in ('normal', 'extreme')),
   constraint leaderboard_scores_ip_len
@@ -56,7 +56,7 @@ to anon, authenticated
 with check (
   char_length(btrim(player_name)) between 1 and 16
   and player_name !~ '[[:cntrl:]]'
-  and altitude between 0 and 100000
+  and altitude between 0 and 1000000
   and mode in ('normal', 'extreme')
   and char_length(btrim(ip_address)) between 3 and 64
   and char_length(btrim(country)) between 2 and 64

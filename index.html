@@ -1018,20 +1018,29 @@ async function submitScore(){
   const score=Math.max(0,Math.floor(altitude||0));
   const name=cleanPlayerName(playerName||lsGet('skyhook_player_name')||'');
   const cfg=supabaseSettings();
-  if(!name || !score || !cfg) return;
+  if(!name || !score || !cfg) return false;
   try {
-    await fetch(cfg.url+'/rest/v1/leaderboard_scores',{
+    const res=await fetch(cfg.url+'/rest/v1/leaderboard_scores',{
       method:'POST',
       headers:{
         apikey:cfg.key,
         Authorization:'Bearer '+cfg.key,
         'content-type':'application/json',
-        Prefer:'return=minimal'
+        Prefer:'return=representation'
       },
       body:JSON.stringify({player_name:name,altitude:score,mode:scoreMode()}),
       keepalive:true
     });
-  } catch (_) {}
+    if(!res.ok){
+      const detail=await res.text().catch(()=> '');
+      console.error('submitScore failed', res.status, detail || res.statusText);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('submitScore error', err);
+    return false;
+  }
 }
 
 function gameOver(){
