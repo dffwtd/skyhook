@@ -109,6 +109,9 @@
   #over .title::before { color:rgba(255,110,110,.28); clip-path:inset(0 0 48% 0); }
   #over .title::after { color:rgba(255,46,46,.78); clip-path:inset(52% 0 0 0); }
   #over .over-alt { font-family:'Syne',sans-serif; font-weight:800; font-size:calc(clamp(18px,2.8vh,24px) * var(--over-title-scale)); letter-spacing:calc(1px * var(--over-title-scale)); color:#ff9b91; text-shadow:0 0 12px rgba(255,46,46,.68); margin-top:4px; }
+  #over .over-submit { min-height:18px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:calc(clamp(10px,1.6vh,13px) * var(--over-title-scale)); letter-spacing:.6px; text-align:center; color:#9fb1c4; opacity:.95; }
+  #over .over-submit.ok { color:#7CFF00; text-shadow:0 0 12px rgba(124,255,0,.45); }
+  #over .over-submit.fail { color:#ff9b91; text-shadow:0 0 12px rgba(255,80,80,.35); }
   #start { justify-content:center; }
   #start .mode-select,
   #start .name-form,
@@ -282,6 +285,7 @@
     <div id="over" class="screen hidden">
       <div class="title glitch" data-text="WASTED">WASTED</div>
       <div class="over-alt" id="overAlt">0m</div>
+      <div class="over-submit" id="overSubmitStatus"></div>
       <div class="over-gap" aria-hidden="true"></div>
       <button class="btn hidden" id="overHomeBtn" type="button">BACK TO HOME</button>
     </div>
@@ -1040,7 +1044,9 @@ async function submitScore(){
   const score=Math.max(0,Math.floor(altitude||0));
   const name=cleanPlayerName(playerName||lsGet('skyhook_player_name')||'');
   const cfg=supabaseSettings();
-  if(!name || !score || !cfg) return false;
+  if(!cfg) return { ok:false, reason:'missing-config' };
+  if(!name) return { ok:false, reason:'missing-name' };
+  if(!score) return { ok:false, reason:'missing-score' };
   const headers={
     apikey:cfg.key,
     Authorization:'Bearer '+cfg.key,
@@ -1058,7 +1064,7 @@ async function submitScore(){
     });
     if(res.ok){
       console.info('submitScore ok', { score, mode: scoreMode(), name, payload: primary });
-      return true;
+      return { ok:true, reason:'primary' };
     }
 
     const detail=await res.text().catch(()=> '');
@@ -1073,13 +1079,13 @@ async function submitScore(){
     if(!res.ok){
       const retryDetail=await res.text().catch(()=> '');
       console.error('submitScore fallback failed', res.status, retryDetail || res.statusText, fallback);
-      return false;
+      return { ok:false, reason:'fallback-failed', status:res.status, detail:retryDetail || res.statusText };
     }
     console.info('submitScore fallback ok', { score, mode: scoreMode(), name, payload: fallback });
-    return true;
+    return { ok:true, reason:'fallback' };
   } catch (err) {
     console.error('submitScore error', err);
-    return false;
+    return { ok:false, reason:'network-error', detail:String(err&&err.message||err||'network-error') };
   }
 }
 
@@ -1091,10 +1097,29 @@ function gameOver(){
   if(nb){best=altitude;lsSet(bestKey(scoreMode()),best);}
   const overAlt=document.getElementById('overAlt');
   if(overAlt) overAlt.textContent=String(Math.max(0,Math.floor(altitude||0)))+'m';
+  const overSubmit=document.getElementById('overSubmitStatus');
+  if(overSubmit){ overSubmit.textContent='SAVING SCORE...'; overSubmit.className='over-submit'; }
   const overHome=document.getElementById('overHomeBtn');
   if(overHome){ overHome.classList.add('hidden'); overHome.classList.remove('reveal'); }
   stopBgm(true);
-  submitScore();
+  submitScore().then(result=>{
+    const overSubmit=document.getElementById('overSubmitStatus');
+    if(!overSubmit) return;
+    if(result && result.ok){
+      overSubmit.textContent='SCORE SAVED';
+      overSubmit.className='over-submit ok';
+      return;
+    }
+    const reason=result && result.reason;
+    const status=result && result.status;
+    if(reason==='missing-config') overSubmit.textContent='SUPABASE CONFIG MISSING';
+    else if(reason==='missing-name') overSubmit.textContent='NAME MISSING';
+    else if(reason==='missing-score') overSubmit.textContent='SCORE TOO LOW';
+    else if(reason==='fallback-failed') overSubmit.textContent='SAVE FAILED'+(status?' ('+status+')':'');
+    else if(reason==='network-error') overSubmit.textContent='NETWORK ERROR';
+    else overSubmit.textContent='SAVE FAILED';
+    overSubmit.className='over-submit fail';
+  });
   document.getElementById('pauseOverlay').classList.add('hidden');
   playWastedSting();
   document.getElementById('over').classList.remove('hidden');
