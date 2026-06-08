@@ -768,8 +768,7 @@ function supabaseSettings(){
   const cfg=window.SKYHOOK_SUPABASE||{};
   const url=String(cfg.url||'').replace(/\/+$/,'');
   const key=String(cfg.anonKey||cfg.anon_key||'');
-  const submitUrl=String(cfg.submitUrl||cfg.submit_url||'').trim();
-  return url && key ? { url, key, submitUrl: submitUrl || '/api/submit-score' } : null;
+  return url && key ? { url, key } : null;
 }
 function syncPlayerNameInput(){
   const input=document.getElementById('playerNameInput');
@@ -1055,45 +1054,65 @@ async function submitScore(){
   if(!cfg) return { ok:false, reason:'missing-config' };
   if(!name) return { ok:false, reason:'missing-name' };
   if(!score) return { ok:false, reason:'missing-score' };
-  const payload={ player_name:name, altitude:score, mode:scoreMode() };
+
   const headers={
     apikey:cfg.key,
     Authorization:'Bearer '+cfg.key,
-    'content-type':'application/json'
+    'content-type':'application/json',
+    Prefer:'return=minimal'
   };
-  const controller=typeof AbortController==='function' ? new AbortController() : null;
-  let timeoutId=0;
-  const fetchPromise=fetch(cfg.submitUrl,{
-    method:'POST',
-    headers,
-    body:JSON.stringify(payload),
-    cache:'no-store',
-    signal:controller ? controller.signal : undefined
-  });
-  const timeoutPromise=new Promise((_,reject)=>{
-    timeoutId=setTimeout(()=>{
-      if(controller) controller.abort();
-      const err=new Error('submit timeout');
-      err.name='TimeoutError';
-      reject(err);
-    },6500);
-  });
-  try {
-    const res=await Promise.race([fetchPromise, timeoutPromise]);
-    if(res.ok){
-      console.info('submitScore ok', { score, mode: scoreMode(), name, url: cfg.submitUrl });
-      return { ok:true, reason:'pages-function' };
+  const primary={ player_name:name, altitude:score, mode:scoreMode() };
+  const fallback={ ...primary, ip_address:'unknown', country:'unknown' };
+  const postJson=async payload=>{
+    const url=cfg.url+'/rest/v1/leaderboard_scores';
+    const controller=typeof AbortController==='function' ? new AbortController() : null;
+    let timeoutId=0;
+    const fetchPromise=fetch(url,{
+      method:'POST',
+      headers,
+      body:JSON.stringify(payload),
+      cache:'no-store',
+      signal:controller ? controller.signal : undefined
+    });
+    const timeoutPromise=new Promise((_,reject)=>{
+      timeoutId=setTimeout(()=>{
+        if(controller) controller.abort();
+        const err=new Error('submit timeout');
+        err.name='TimeoutError';
+        reject(err);
+      },6500);
+    });
+    try {
+      return await Promise.race([fetchPromise, timeoutPromise]);
+    } finally {
+      clearTimeout(timeoutId);
     }
+  };
+
+  try {
+    let res=await postJson(primary);
+    if(res.ok){
+      console.info('submitScore ok', { score, mode: scoreMode(), name, payload: primary });
+      return { ok:true, reason:'direct-rest-primary' };
+    }
+
     const detail=await res.text().catch(()=> '');
-    console.error('submitScore failed', res.status, detail || res.statusText, { score, mode: scoreMode(), name, url: cfg.submitUrl });
-    return { ok:false, reason:'submit-failed', status:res.status, detail:detail || res.statusText };
+    console.warn('submitScore primary failed, retrying fallback payload', res.status, detail || res.statusText, { score, mode: scoreMode(), name });
+
+    res=await postJson(fallback);
+    if(!res.ok){
+      const retryDetail=await res.text().catch(()=> '');
+      console.error('submitScore fallback failed', res.status, retryDetail || res.statusText, fallback);
+      return { ok:false, reason:'submit-failed', status:res.status, detail:retryDetail || res.statusText };
+    }
+
+    console.info('submitScore fallback ok', { score, mode: scoreMode(), name, payload: fallback });
+    return { ok:true, reason:'direct-rest-fallback' };
   } catch (err) {
     console.error('submitScore error', err);
     const errText=String(err&&err.message||err||'network-error');
     const isTimeout=!!(err && (err.name==='AbortError' || err.name==='TimeoutError' || /abort|timeout/i.test(errText)));
     return { ok:false, reason:isTimeout?'timeout':'network-error', detail:errText };
-  } finally {
-    clearTimeout(timeoutId);
   }
 }
 function gameOver(){
