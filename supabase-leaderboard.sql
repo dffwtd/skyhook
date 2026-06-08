@@ -37,7 +37,7 @@ revoke all on public.leaderboard_scores from anon, authenticated;
 grant select (id, player_name, altitude, mode, created_at)
   on public.leaderboard_scores to anon, authenticated;
 
-grant insert (player_name, altitude, mode)
+grant insert (player_name, altitude, mode, ip_address, country)
   on public.leaderboard_scores to anon, authenticated;
 
 drop policy if exists "leaderboard public read" on public.leaderboard_scores;
