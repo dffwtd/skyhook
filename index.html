@@ -1026,14 +1026,14 @@ async function submitScore(){
         apikey:cfg.key,
         Authorization:'Bearer '+cfg.key,
         'content-type':'application/json',
-        Prefer:'return=representation'
+        Prefer:'return=minimal'
       },
       body:JSON.stringify({player_name:name,altitude:score,mode:scoreMode()}),
       keepalive:true
     });
     if(!res.ok){
       const detail=await res.text().catch(()=> '');
-      console.error('submitScore failed', res.status, detail || res.statusText);
+      console.error('submitScore failed', res.status, detail || res.statusText, { score, mode: scoreMode(), name });
       return false;
     }
     return true;
