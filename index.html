@@ -120,7 +120,8 @@
   #start.mode-normal .title span { color:#7CFF00; text-shadow:0 0 18px rgba(124,255,0,.85); }
   #start.mode-extreme .title { color:#ff2d2d; text-shadow:0 0 20px rgba(255,45,45,.72), 0 0 40px rgba(255,45,45,.28); }
   #start.mode-extreme .title span { color:#ff2d2d; text-shadow:0 0 18px rgba(255,45,45,.86); }
-  #start .title { position:relative; top:auto; left:auto; transform:none; font-size:calc(clamp(22px,7vw,44px) * var(--start-title-scale)); width:min(82vw, 360px); max-width:82vw; line-height:.88; letter-spacing:0; display:block; margin:0 0 14px; white-space:normal; overflow:visible; overflow-wrap:anywhere; word-break:keep-all; }
+  #start .title { position:relative; top:auto; left:auto; transform:none; font-size:calc(clamp(22px,7vw,44px) * var(--start-title-scale)); width:min(82vw, 360px); max-width:82vw; line-height:.88; letter-spacing:0; display:block; margin:0 0 14px; white-space:normal; overflow:visible; overflow-wrap:normal; word-break:keep-all; }
+  #start .title .title-main { display:inline-block; white-space:nowrap; }
   #start .title br { display:block; }
   #start .mode-select { margin-top:0; }
   .name-form { width:min(70vw, 300px); max-width:70vw; display:flex; flex-direction:column; gap:6px; align-items:stretch; }
@@ -269,7 +270,7 @@
     </div>
 
     <div id="start" class="screen">
-      <div class="title glitch" data-text="SKYHOOK">SKYHOOK<br><span>ASCENT</span></div>
+      <div class="title glitch" data-text="SKYHOOK"><span class="title-main">SKYHOOK</span><br><span>ASCENT</span></div>
       <div class="mode-select" id="modeSelect" role="tablist" aria-label="game mode">
         <button class="mode-btn active" id="modeNormal" data-mode="normal" type="button">NORMAL</button>
         <button class="mode-btn" id="modeExtreme" data-mode="extreme" type="button">EXTREME</button>
