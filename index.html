@@ -249,15 +249,23 @@
       position:relative;
       top:auto;
       left:auto;
-      width:min(86vw, 360px);
+      width:auto;
       max-width:86vw;
       margin:0 auto 18px;
       align-self:center;
       transform:none;
       transform-origin:center top;
+      display:inline-block;
+      white-space:nowrap;
+      overflow-wrap:normal;
+      word-break:keep-all;
     }
-    #over .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--over-title-scale)); transform:translateX(-2.5vw) skewX(-4deg) scaleY(1.04); transform-origin:center top; }
-    #pauseOverlay .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--pause-title-scale)); transform:translateX(-1.2vw); transform-origin:center top; }
+    #over .title::before,
+    #over .title::after,
+    #pauseOverlay .title::before,
+    #pauseOverlay .title::after { display:none; content:none; }
+    #over .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--over-title-scale)); transform:none; letter-spacing:0; }
+    #pauseOverlay .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--pause-title-scale)); transform:none; letter-spacing:0; }
     #start #leaderboardBtn { width:min(66vw, 250px); max-width:66vw; font-size:calc(clamp(10px,3.1vw,13px) * var(--btn-scale)); }
     #over .title,
     #pauseOverlay .title { margin-bottom:18px; }
