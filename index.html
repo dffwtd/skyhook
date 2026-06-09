@@ -256,8 +256,8 @@
       transform:none;
       transform-origin:center top;
     }
-    #over .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--over-title-scale)); transform:skewX(-6deg) scaleY(1.05); }
-    #pauseOverlay .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--pause-title-scale)); }
+    #over .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--over-title-scale)); transform:translateX(0) skewX(-4deg) scaleY(1.04); transform-origin:center top; }
+    #pauseOverlay .title { font-size:calc(clamp(20px,8.5vw,36px) * var(--pause-title-scale)); transform:translateX(0); transform-origin:center top; }
     #start #leaderboardBtn { width:min(66vw, 250px); max-width:66vw; font-size:calc(clamp(10px,3.1vw,13px) * var(--btn-scale)); }
     #over .title,
     #pauseOverlay .title { margin-bottom:18px; }
@@ -586,6 +586,7 @@ let fogArmed=false;
 let fogStartFrame=0;
 const selectedMap='shaft';
 let player, anchors, hazards, particles, explosions, camY, altitude, frame, topMost, lastAnchorY, platform, started, nextHazardAlt, deathTimer, wallGrace;
+let inputHeld=false;
 let rope={active:false,ax:0,ay:0,len:0,baseLen:0,angle:0,omega:0,spin:1,prevSpeed:0,turns:0};
 
 function speed(){ return BASE_SPEED*speedMul; }
@@ -729,6 +730,7 @@ function addAnchor(){
 function press(){
   if(state==='start'){startGame();return;}
   if(state==='over')return;
+  inputHeld=true;
   started=true;
   // if standing on platform, hop off so a grapple can grab
   if(player.onGround){ player.vy=-6.5; player.onGround=false; }
@@ -760,7 +762,9 @@ function press(){
     burst(bestA.x,bestA.y,'#00c8ff',6);
   }
 }
-function release(){
+function release(force=false){
+  if(!force && !inputHeld) return;
+  inputHeld=false;
   if(rope.active){
     const tx=-Math.sin(rope.angle), ty=Math.cos(rope.angle);
     const speed=Math.hypot(player.vx,player.vy);
@@ -768,8 +772,11 @@ function release(){
     const elasticBoost=selectedMode==='extreme' ? 1.18 : 0.92;
     const turnBoost=(1+rope.turns*0.55)*elasticBoost;
     const launch=Math.min(2.25,1 + speed*0.045 + stretch*0.0045 + rope.turns*0.16)*elasticBoost;
+    const releaseBonus=Math.min(26, 2.6 + speed*0.24 + stretch*0.034 + rope.turns*1.9)*elasticBoost;
     player.vx=player.vx*launch;
     player.vy=player.vy*launch;
+    player.vx += tx*releaseBonus*0.72*turnBoost;
+    player.vy += ty*releaseBonus*0.72*turnBoost;
     if(player.vy > -1.2){
       const lift=Math.min(42, 8 + speed*0.62 + stretch*0.06 + rope.turns*3.0)*elasticBoost;
       player.vy -= lift*turnBoost;
@@ -818,7 +825,7 @@ document.addEventListener('selectstart',e=>e.preventDefault());
 document.addEventListener('dragstart',e=>e.preventDefault());
 stage.addEventListener('pointerdown',e=>{ if(state!=='play') return; e.preventDefault(); press(); });
 stage.addEventListener('pointerup',e=>{ if(state!=='play') return; e.preventDefault(); release(); });
-stage.addEventListener('pointercancel',()=>{ if(state==='play') release(); });
+stage.addEventListener('pointercancel',()=>{ if(state==='play') release(true); });
 window.addEventListener('keydown',e=>{
   if(e.code==='KeyP' || e.code==='Escape'){
     e.preventDefault();
@@ -828,6 +835,7 @@ window.addEventListener('keydown',e=>{
   if((e.code==='Space'||e.code==='ArrowUp')&&!e.repeat){e.preventDefault();press();}
 });
 window.addEventListener('keyup',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();release();}});
+window.addEventListener('blur',()=>{ inputHeld=false; });
 let uiTransitionLockUntil=0;
 function uiTransitionLocked(){
   const now=(window.performance&&typeof window.performance.now==='function') ? window.performance.now() : Date.now();
