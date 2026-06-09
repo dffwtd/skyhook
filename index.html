@@ -245,17 +245,26 @@
 
   @media (max-width:390px) {
     #over .title,
+    #pauseOverlay .title,
+    #over .over-alt,
+    #over .over-submit,
+    #pauseOverlay .pause-note {
+      width:min(72vw, 260px);
+      max-width:72vw;
+      margin-left:auto;
+      margin-right:auto;
+      text-align:center;
+    }
+    #over .title,
     #pauseOverlay .title {
       position:relative;
       top:auto;
       left:auto;
-      width:auto;
-      max-width:86vw;
       margin:0 auto 18px;
       align-self:center;
       transform:none;
       transform-origin:center top;
-      display:inline-block;
+      display:block;
       white-space:nowrap;
       overflow-wrap:normal;
       word-break:keep-all;
