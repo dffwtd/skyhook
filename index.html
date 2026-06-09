@@ -108,8 +108,8 @@
     width:min(82vw, 100%); max-width:82vw; overflow-wrap:anywhere; word-break:keep-all; text-align:center; }
   #over .title::before { color:rgba(255,110,110,.28); clip-path:inset(0 0 48% 0); }
   #over .title::after { color:rgba(255,46,46,.78); clip-path:inset(52% 0 0 0); }
-  #over .over-alt { font-family:'Syne',sans-serif; font-weight:800; font-size:calc(clamp(18px,2.8vh,24px) * var(--over-title-scale)); letter-spacing:calc(1px * var(--over-title-scale)); color:#ff9b91; text-shadow:0 0 12px rgba(255,46,46,.68); margin-top:4px; }
-  #over .over-submit { min-height:18px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:calc(clamp(10px,1.6vh,13px) * var(--over-title-scale)); letter-spacing:.6px; text-align:center; color:#9fb1c4; opacity:.95; }
+  #over .over-alt { font-family:'Syne',sans-serif; font-weight:800; font-size:calc(clamp(18px,2.8vh,24px) * var(--over-title-scale)); letter-spacing:calc(1px * var(--over-title-scale)); color:#ff9b91; text-shadow:0 0 12px rgba(255,46,46,.68); margin-top:10px; margin-bottom:10px; }
+  #over .over-submit { min-height:18px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:calc(clamp(10px,1.6vh,13px) * var(--over-title-scale)); letter-spacing:.6px; text-align:center; color:#9fb1c4; opacity:.95; margin-bottom:8px; }
   #over .over-submit.ok { color:#7CFF00; text-shadow:0 0 12px rgba(124,255,0,.45); }
   #over .over-submit.fail { color:#ff9b91; text-shadow:0 0 12px rgba(255,80,80,.35); }
   #start { justify-content:center; }
@@ -247,10 +247,10 @@
   @media (max-width:390px) {
     #over .overlay-stack,
     #pauseOverlay .overlay-stack {
-      width:min(72vw, 260px);
-      max-width:72vw;
+      width:auto;
+      max-width:86vw;
       margin:0 auto;
-      display:flex;
+      display:inline-flex;
       flex-direction:column;
       align-items:center;
       text-align:center;
@@ -260,10 +260,10 @@
     #over .over-alt,
     #over .over-submit,
     #pauseOverlay .pause-note {
-      width:100%;
-      max-width:100%;
-      margin-left:auto;
-      margin-right:auto;
+      width:auto;
+      max-width:none;
+      margin-left:0;
+      margin-right:0;
       text-align:center;
     }
     #over .title,
@@ -271,11 +271,11 @@
       position:relative;
       top:auto;
       left:auto;
-      margin:0 auto 18px;
+      margin:0 0 18px;
       align-self:center;
       transform:none;
       transform-origin:center top;
-      display:block;
+      display:inline-block;
       white-space:nowrap;
       overflow-wrap:normal;
       word-break:keep-all;
