@@ -118,8 +118,18 @@ function fmtTimeParts(v){
 }
 function render(scores){
   const list=(scores||[]);
-  if(!list.length){ rows.innerHTML='<div class="state">아직 등록된 기록이 없습니다</div>'; return; }
-  rows.innerHTML=list.map((s,i)=>{
+  const bestByName=new Map();
+  for(const score of list){
+    const name=String(score?.player_name||'').trim();
+    if(!name) continue;
+    const prev=bestByName.get(name);
+    if(!prev || Number(score.altitude||0) > Number(prev.altitude||0)){
+      bestByName.set(name, score);
+    }
+  }
+  const filtered=[...bestByName.values()];
+  if(!filtered.length){ rows.innerHTML='<div class="state">아직 등록된 기록이 없습니다</div>'; return; }
+  rows.innerHTML=filtered.map((s,i)=>{
     const t=fmtTimeParts(s.created_at);
     return '<div class="row"><div class="rank">#'+(i+1)+'</div><div class="name">'+esc(s.player_name)+'</div><div class="alt">'+Number(s.altitude||0)+'m</div><div class="time"><span class="date">'+esc(t.date)+'</span><span class="clock">'+esc(t.clock)+'</span></div></div>'; 
   }).join('');
