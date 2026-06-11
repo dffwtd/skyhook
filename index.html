@@ -776,8 +776,8 @@ function addAnchor(){
   const y=lastAnchorY-gap;
   const edgeRoll=Math.random();
   let x;
-  if(edgeRoll < 0.12){
-    x = edgeRoll < 0.06 ? 26 + Math.random()*22 : W - 26 - Math.random()*22;
+  if(edgeRoll < 0.06){
+    x = edgeRoll < 0.03 ? 26 + Math.random()*22 : W - 26 - Math.random()*22;
   } else {
     const lanes=[0.22,0.34,0.48,0.62,0.78];
     const lane=lanes[Math.floor(Math.random()*lanes.length)];
@@ -798,7 +798,7 @@ function addAnchor(){
     const ox=Math.max(minX,Math.min(maxX,x+(Math.random()<0.5?-1:1)*(34+Math.random()*22)));
     anchors.push({x:ox,y:y-(18+Math.random()*18),r:8});
   }
-  if(Math.random()<0.12){
+  if(Math.random()<0.06){
     const ex = Math.random()<0.5 ? 18 + Math.random()*18 : W - 18 - Math.random()*18;
     anchors.push({x:Math.max(minX,Math.min(maxX,ex)),y:y-(14+Math.random()*16),r:8});
   }
