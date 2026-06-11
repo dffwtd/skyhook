@@ -1368,7 +1368,8 @@ function update(){
 
     // generate anchors above
     while(lastAnchorY > -(altitude+500)*12) addAnchor();
-    anchors=anchors.filter(a=>a.y < camY+H+140);
+    const gasY=fogLineY();
+    anchors=anchors.filter(a=>a.y < gasY);
     for(const h of hazards){
       if(h.vx){
         const wobble=Math.sin(frame*0.07+h.phase)*0.72;
@@ -1376,7 +1377,7 @@ function update(){
         if(h.x<8||h.x>W-8-h.w)h.vx*=-1;
       }
     }
-    hazards=hazards.filter(h=>!h.dead && h.y < camY+H+140);
+    hazards=hazards.filter(h=>!h.dead && h.y < gasY);
 
 
     // death: touch the rising fog, or collide with a hazard.
