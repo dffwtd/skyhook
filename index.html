@@ -1263,7 +1263,7 @@ function gameOver(){
     overSubmit.className='over-submit fail';
   });
   document.getElementById('pauseOverlay').classList.add('hidden');
-  playWastedSting();
+  if(bgmEnabled) playWastedSting();
   document.getElementById('over').classList.remove('hidden');
   setTimeout(()=>{ const btn=document.getElementById('overHomeBtn'); if(btn){ btn.classList.remove('hidden'); btn.classList.add('reveal'); } }, 3000);
   syncPauseButton();
