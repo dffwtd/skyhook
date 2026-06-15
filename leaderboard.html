@@ -32,23 +32,28 @@
   .panel { position:relative; z-index:1; margin-top:18px; border:1px solid rgba(0,200,255,.28); background:rgba(7,5,16,.62); box-shadow:0 0 24px rgba(0,200,255,.12), inset 0 0 18px rgba(0,200,255,.06); flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; }
   .entry { border-bottom:1px solid rgba(0,200,255,.12); }
   .entry:last-child { border-bottom:0; }
-  .row { display:grid; grid-template-columns:minmax(54px,68px) minmax(0,1fr) minmax(70px,84px) minmax(96px,120px); gap:10px; align-items:start; min-height:62px;
+  .row { display:grid; grid-template-columns:minmax(42px,56px) minmax(0,1fr) minmax(62px,76px) minmax(72px,92px); gap:8px; align-items:start; min-height:62px;
     padding:8px 8px 10px; }
   .head { min-height:44px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:14px; letter-spacing:0; align-items:end; }
-  .rank { font-family:'Syne',sans-serif; color:#7CFF00; font-weight:800; font-size:22px; letter-spacing:0; min-width:0; line-height:1; white-space:nowrap; text-shadow:0 0 10px rgba(124,255,0,.18); }
+  .rank { font-family:'Syne',sans-serif; color:#7CFF00; font-weight:800; font-size:21px; letter-spacing:0; min-width:0; line-height:1; white-space:nowrap; text-shadow:0 0 10px rgba(124,255,0,.18); }
   .page.mode-extreme .rank { color:#ff2d2d; text-shadow:0 0 10px rgba(255,45,45,.18); }
-  .name-wrap { min-width:0; display:flex; align-items:flex-start; gap:8px; }
-  .name { overflow:hidden; text-overflow:ellipsis; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:22px; min-width:0; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; flex:1 1 auto; }
-  .name-toggle { flex:0 0 auto; border:1px solid rgba(0,200,255,.34); background:rgba(7,5,16,.72); color:#00c8ff; font-family:'Syne',sans-serif; font-weight:800; font-size:11px; line-height:1; letter-spacing:0; padding:4px 8px; cursor:pointer; box-shadow:0 0 10px rgba(0,200,255,.12), inset 0 0 8px rgba(0,200,255,.05); white-space:nowrap; }
-  .name-toggle:active { transform:scale(.97); }
-  .page.mode-extreme .name-toggle { color:#ff2d2d; border-color:rgba(255,45,45,.34); box-shadow:0 0 10px rgba(255,45,45,.12), inset 0 0 8px rgba(255,45,45,.05); }
-  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:22px; letter-spacing:0; min-width:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:13px; letter-spacing:0; min-width:0; line-height:1.05; white-space:normal; display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  .name-cell { min-width:0; display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .name { overflow:hidden; text-overflow:ellipsis; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:20px; min-width:0; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; flex:1 1 auto; }
+  .name-cell:active .name { opacity:.86; }
+  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:20px; letter-spacing:0; min-width:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:11px; letter-spacing:0; min-width:0; line-height:1.05; white-space:normal; display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
   .time .date, .time .clock { display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .details { display:none; padding:0 8px 10px 70px; }
-  .entry.open .details { display:block; }
-  .detail-list { display:flex; flex-direction:column; gap:6px; border-left:1px solid rgba(0,200,255,.16); padding-left:10px; }
-  .detail-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:12px; line-height:1.1; color:#9fb1c4; }
+  .modal { position:fixed; inset:0; z-index:20; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(7,5,16,.82); backdrop-filter:blur(4px); }
+  .modal.open { display:flex; }
+  .modal-card { width:min(92vw, 560px); max-height:min(78vh, 680px); overflow:hidden; border:1px solid rgba(0,200,255,.28); background:rgba(7,5,16,.96); box-shadow:0 0 34px rgba(0,200,255,.16), inset 0 0 18px rgba(0,200,255,.06); display:flex; flex-direction:column; }
+  .modal-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 12px 10px; border-bottom:1px solid rgba(0,200,255,.12); }
+  .modal-name { min-width:0; font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .modal-close { border:1px solid rgba(255,255,255,.78); background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(242,250,255,.9) 56%, rgba(210,242,255,.92)); color:#0b1020; font-family:'Syne',sans-serif; font-weight:800; font-size:11px; padding:8px 10px; cursor:pointer; white-space:nowrap; box-shadow:0 0 14px rgba(255,255,255,.26), inset 0 0 10px rgba(255,255,255,.34); }
+  .modal-close:active { transform:scale(.97); }
+  .modal-body { overflow-y:auto; -webkit-overflow-scrolling:touch; padding:10px 12px 12px; }
+  .detail-list { display:flex; flex-direction:column; gap:8px; }
+  .detail-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:12px; line-height:1.1; color:#9fb1c4; padding:6px 0; border-bottom:1px solid rgba(0,200,255,.08); }
+  .detail-item:last-child { border-bottom:0; }
   .detail-item .d-alt { color:#00c8ff; font-weight:900; white-space:nowrap; }
   .detail-item .d-time { display:flex; flex-direction:column; align-items:flex-end; gap:1px; white-space:nowrap; }
   .state { padding:24px 14px; text-align:center; color:#9fb1c4; line-height:1.45; font-size:13px; }
@@ -72,9 +77,11 @@
     .page { padding-left:10px; padding-right:10px; }
     .back { width:82px; height:36px; font-size:11px; padding:0 10px; }
     .title { font-size:clamp(20px,8.5vw,32px); }
-    .row { grid-template-columns:minmax(46px,58px) minmax(0,1.12fr) minmax(62px,74px) minmax(82px,100px); gap:6px; padding:8px 6px 10px; }
-    .rank,.name,.alt { font-size:17px; }
-    .time { font-size:11px; }
+    .row { grid-template-columns:minmax(40px,48px) minmax(0,1fr) minmax(54px,66px) minmax(60px,76px); gap:5px; padding:8px 5px 10px; }
+    .rank,.name,.alt { font-size:15px; }
+    .time { font-size:10px; }
+    .modal-card { width:min(94vw, 520px); }
+    .modal-name { font-size:16px; }
   }
 </style>
 </head>
@@ -92,6 +99,15 @@
       <div class="row head"><div>RANK</div><div>NAME</div><div>ALT</div><div>TIME</div></div>
       <div id="rankRows"><div class="state">랭킹 서버 설정 대기 중</div></div>
     </section>
+    <div class="modal" id="detailModal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="detailName">
+        <div class="modal-head">
+          <div class="modal-name" id="detailName"></div>
+          <button class="modal-close" id="detailClose" type="button">CLOSE</button>
+        </div>
+        <div class="modal-body" id="detailBody"></div>
+      </div>
+    </div>
   </main>
   </div>
 
@@ -103,6 +119,10 @@ let currentMode=params.get('mode')==='extreme' ? 'extreme' : 'normal';
 const modeKey=mode=>mode==='extreme' ? 'skyhook_best_extreme' : 'skyhook_best_normal';
 const backBtn=document.getElementById('backBtn');
 const localBestEl=document.getElementById('localBest');
+const detailModal=document.getElementById('detailModal');
+const detailName=document.getElementById('detailName');
+const detailBody=document.getElementById('detailBody');
+const detailClose=document.getElementById('detailClose');
 function supabaseSettings(){
   const cfg=window.SKYHOOK_SUPABASE||{};
   const url=String(cfg.url||'').replace(/\/+$/,'');
@@ -127,6 +147,21 @@ function fmtTimeParts(v){
     clock:`${pad(d.getHours())}:${pad(d.getMinutes())}`
   };
 }
+function openDetails(name, items){
+  if(!detailModal || !detailName || !detailBody) return;
+  detailName.textContent=name;
+  detailBody.innerHTML='<div class="detail-list">'+items.map(item=>{
+    const dt=fmtTimeParts(item.created_at);
+    return '<div class="detail-item"><div class="d-alt">'+Number(item.altitude||0)+'m</div><div class="d-time"><span class="date">'+esc(dt.date)+'</span><span class="clock">'+esc(dt.clock)+'</span></div></div>';
+  }).join('')+'</div>';
+  detailModal.classList.add('open');
+  detailModal.setAttribute('aria-hidden','false');
+}
+function closeDetails(){
+  if(!detailModal) return;
+  detailModal.classList.remove('open');
+  detailModal.setAttribute('aria-hidden','true');
+}
 function render(scores){
   const list=(scores||[]);
   const grouped=new Map();
@@ -150,20 +185,18 @@ function render(scores){
   if(!groups.length){ rows.innerHTML='<div class="state">아직 등록된 기록이 없습니다</div>'; return; }
   rows.innerHTML=groups.map((g,i)=>{
     const t=fmtTimeParts(g.best.created_at);
-    const details=g.items.map(item=>{
-      const dt=fmtTimeParts(item.created_at);
-      return '<div class="detail-item"><div class="d-alt">'+Number(item.altitude||0)+'m</div><div class="d-time"><span class="date">'+esc(dt.date)+'</span><span class="clock">'+esc(dt.clock)+'</span></div></div>';
-    }).join('');
-    return '<div class="entry" data-name="'+esc(g.name)+'"><div class="row"><div class="rank">#'+(i+1)+'</div><div class="name-wrap"><div class="name">'+esc(g.name)+'</div><button class="name-toggle" type="button" aria-expanded="false">RECORDS</button></div><div class="alt">'+Number(g.best.altitude||0)+'m</div><div class="time"><span class="date">'+esc(t.date)+'</span><span class="clock">'+esc(t.clock)+'</span></div></div><div class="details"><div class="detail-list">'+details+'</div></div></div>';
+    return '<div class="entry" data-name="'+esc(g.name)+'"><div class="row"><div class="rank">#'+(i+1)+'</div><div class="name-cell" role="button" tabindex="0" aria-label="'+esc(g.name)+' records"><div class="name">'+esc(g.name)+'</div></div><div class="alt">'+Number(g.best.altitude||0)+'m</div><div class="time"><span class="date">'+esc(t.date)+'</span><span class="clock">'+esc(t.clock)+'</span></div></div></div>';
   }).join('');
-  rows.querySelectorAll('.name-toggle').forEach(btn=>btn.addEventListener('click',()=>{
-    const entry=btn.closest('.entry');
-    if(!entry) return;
-    const open=!entry.classList.contains('open');
-    entry.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    btn.textContent=open ? 'CLOSE' : 'RECORDS';
-  }));
+  rows.querySelectorAll('.name-cell').forEach(cell=>{
+    const entry=cell.closest('.entry');
+    const name=entry?.dataset?.name||'';
+    const group=groups.find(g=>g.name===name);
+    const open=()=>group && openDetails(group.name, group.items);
+    cell.addEventListener('click',open);
+    cell.addEventListener('keydown',e=>{
+      if(e.key==='Enter' || e.key===' ') { e.preventDefault(); open(); }
+    });
+  });
 }
 async function loadScores(){
   const cfg=supabaseSettings();
@@ -175,8 +208,7 @@ async function loadScores(){
     const res=await fetch(endpoint,{headers:{apikey:cfg.key,Authorization:'Bearer '+cfg.key,accept:'application/json'}});
     if(!res.ok) throw new Error('request failed');
     const scores=await res.json();
-    const ordered=scores;
-    render(ordered);
+    render(scores);
   } catch (_) {
     rows.innerHTML='<div class="state">랭킹을 불러오지 못했습니다</div>';
   }
@@ -189,6 +221,9 @@ document.querySelectorAll('.mode-tab').forEach(btn=>btn.addEventListener('pointe
   syncModeUI();
   loadScores();
 }));
+if(detailClose) detailClose.addEventListener('click', closeDetails);
+if(detailModal) detailModal.addEventListener('click',e=>{ if(e.target===detailModal) closeDetails(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDetails(); });
 document.addEventListener('selectstart',e=>e.preventDefault());
 document.addEventListener('dragstart',e=>e.preventDefault());
 syncModeUI();
