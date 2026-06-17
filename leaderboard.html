@@ -14,7 +14,7 @@
     background:radial-gradient(ellipse at 50% -10%,rgba(0,200,255,.18),transparent 55%),
       radial-gradient(ellipse at 50% 110%,rgba(156,219,60,.14),transparent 50%),#070510; }
   .shell { display:flex; align-items:stretch; justify-content:center; min-height:calc(100dvh - 32px); }
-  .page { width:100vw; min-height:100%; height:calc(100dvh - 32px); position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(0,200,255,.22); padding:70px 14px 18px; }
+  .page { width:100vw; min-height:100%; height:calc(100dvh - 32px); position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(0,200,255,.22); padding:70px 14px 18px; --pagew:460px; --pageh:818px; }
   @media (orientation:landscape) {
     .page { width:min(100vw,calc(100vh * 9 / 16)); width:min(100vw,calc(100dvh * 9 / 16));
       height:100vh; height:100dvh; }
@@ -25,23 +25,23 @@
     display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.78);
     background:linear-gradient(135deg, rgba(255,255,255,.94), rgba(242,250,255,.9) 56%, rgba(210,242,255,.92)); color:#0b1020; text-decoration:none; font-family:'Syne',sans-serif;
     font-size:12px; font-weight:800; letter-spacing:0; box-shadow:0 0 18px rgba(255,255,255,.38), inset 0 0 12px rgba(255,255,255,.45); text-shadow:0 0 2px rgba(255,255,255,.55); border-radius:0; }
-  .title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(22px,7.6vw,42px); line-height:.9;
+  .title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(22px, calc(var(--pagew) * .09), 42px); line-height:.9;
     letter-spacing:0; text-align:center; margin-bottom:14px; }
   .title .sky { color:#fff; text-shadow:0 0 20px rgba(255,255,255,.72), 0 0 34px rgba(255,255,255,.28); }
   .title .board { color:#00c8ff; text-shadow:0 0 20px #00c8ff, 0 0 36px rgba(0,200,255,.35); }
   .panel { position:relative; z-index:1; margin-top:18px; border:1px solid rgba(0,200,255,.28); background:rgba(7,5,16,.62); box-shadow:0 0 24px rgba(0,200,255,.12), inset 0 0 18px rgba(0,200,255,.06); flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; }
   .entry { border-bottom:1px solid rgba(0,200,255,.12); }
   .entry:last-child { border-bottom:0; }
-  .row { display:grid; grid-template-columns:minmax(42px,56px) minmax(0,1fr) minmax(62px,76px) minmax(72px,92px); gap:8px; align-items:start; min-height:62px;
+  .row { display:grid; grid-template-columns:minmax(44px,64px) minmax(0,1fr) minmax(58px,74px) minmax(58px,82px); gap:6px; align-items:start; min-height:62px;
     padding:8px 8px 10px; }
   .head { min-height:44px; color:#9fb1c4; font-family:'Syne',sans-serif; font-size:14px; letter-spacing:0; align-items:end; }
-  .rank { font-family:'Syne',sans-serif; color:#7CFF00; font-weight:800; font-size:21px; letter-spacing:0; min-width:0; line-height:1; white-space:nowrap; text-shadow:0 0 10px rgba(124,255,0,.18); }
+  .rank { font-family:'Syne',sans-serif; color:#7CFF00; font-weight:800; font-size:clamp(16px, calc(var(--pagew) * .045), 21px); letter-spacing:0; min-width:0; line-height:1; white-space:nowrap; text-shadow:0 0 10px rgba(124,255,0,.18); }
   .page.mode-extreme .rank { color:#ff2d2d; text-shadow:0 0 10px rgba(255,45,45,.18); }
   .name-cell { min-width:0; display:flex; align-items:center; gap:8px; cursor:pointer; }
-  .name { overflow:hidden; text-overflow:ellipsis; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:20px; min-width:0; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; flex:1 1 auto; }
+  .name { overflow:hidden; text-overflow:ellipsis; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:clamp(15px, calc(var(--pagew) * .043), 20px); min-width:0; line-height:1.05; white-space:normal; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; flex:1 1 auto; }
   .name-cell:active .name { opacity:.86; }
-  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:20px; letter-spacing:0; min-width:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:11px; letter-spacing:0; min-width:0; line-height:1.05; white-space:normal; display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  .alt { text-align:right; color:#00c8ff; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:900; font-size:clamp(15px, calc(var(--pagew) * .043), 20px); letter-spacing:0; min-width:0; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .time { text-align:right; color:#9fb1c4; font-family:'Noto Sans KR',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:800; font-size:clamp(9px, calc(var(--pagew) * .024), 11px); letter-spacing:0; min-width:0; line-height:1.05; white-space:normal; display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
   .time .date, .time .clock { display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .modal { position:fixed; inset:0; z-index:20; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(7,5,16,.82); backdrop-filter:blur(4px); }
   .modal.open { display:flex; }
@@ -59,7 +59,7 @@
   .state { padding:24px 14px; text-align:center; color:#9fb1c4; line-height:1.45; font-size:13px; }
   .mode-tabs { margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .mode-tab { border:1px solid rgba(0,200,255,.34); background:rgba(7,5,16,.7); color:#9fb1c4;
-    font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:1px; padding:13px 0; cursor:pointer; }
+    font-family:'Syne',sans-serif; font-size:clamp(14px, calc(var(--pagew) * .037), 17px); font-weight:800; letter-spacing:1px; padding:13px 0; cursor:pointer; }
   .mode-tab[data-mode='normal'] { color:#7CFF00; border-color:rgba(124,255,0,.35); }
   .mode-tab[data-mode='extreme'] { color:#ff2d2d; border-color:rgba(255,45,45,.35); }
   .mode-tab.active { color:#070510; }
@@ -70,16 +70,16 @@
     font-family:'Syne',sans-serif; font-size:10px; letter-spacing:1px; margin-left:8px; vertical-align:middle; }
   .mode-badge.normal { color:#7CFF00; border:1px solid rgba(124,255,0,.35); box-shadow:0 0 10px rgba(124,255,0,.18); }
   .mode-badge.extreme { color:#ff2d2d; border:1px solid rgba(255,45,45,.35); box-shadow:0 0 10px rgba(255,45,45,.18); }
-  .local { margin:8px 0 10px; text-align:center; color:#7CFF00; font-family:'Syne',sans-serif; font-size:18px; letter-spacing:0; text-shadow:0 0 10px rgba(124,255,0,.18); }
+  .local { margin:8px 0 10px; text-align:center; color:#7CFF00; font-family:'Syne',sans-serif; font-size:clamp(14px, calc(var(--pagew) * .039), 18px); letter-spacing:0; text-shadow:0 0 10px rgba(124,255,0,.18); }
   .page.mode-extreme .local { color:#ff2d2d; text-shadow:0 0 10px rgba(255,45,45,.18); }
 
   @media (max-width:380px) {
     .page { padding-left:10px; padding-right:10px; }
     .back { width:82px; height:36px; font-size:11px; padding:0 10px; }
-    .title { font-size:clamp(20px,8.5vw,32px); }
-    .row { grid-template-columns:minmax(40px,48px) minmax(0,1fr) minmax(54px,66px) minmax(60px,76px); gap:5px; padding:8px 5px 10px; }
-    .rank,.name,.alt { font-size:15px; }
-    .time { font-size:10px; }
+    .title { font-size:clamp(20px, calc(var(--pagew) * .085), 32px); }
+    .row { grid-template-columns:minmax(42px,52px) minmax(0,1fr) minmax(50px,62px) minmax(52px,68px); gap:4px; padding:8px 5px 10px; }
+    .rank,.name,.alt { font-size:14px; }
+    .time { font-size:9px; }
     .modal-card { width:min(94vw, 520px); }
     .modal-name { font-size:16px; }
   }
@@ -111,6 +111,19 @@
   </main>
   </div>
 
+
+<script>
+function syncPageSizeVars(){
+  const page=document.querySelector('.page');
+  if(!page) return;
+  const rect=page.getBoundingClientRect();
+  page.style.setProperty('--pagew', rect.width + 'px');
+  page.style.setProperty('--pageh', rect.height + 'px');
+}
+window.addEventListener('resize',syncPageSizeVars,{passive:true});
+window.addEventListener('orientationchange',syncPageSizeVars,{passive:true});
+syncPageSizeVars();
+</script>
 <script src="supabase-config.js"></script>
 <script>
 const rows=document.getElementById('rankRows');
